@@ -7,237 +7,188 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --accent:#0a8a52;
-    --muted:#666;
-    --paper:#fff;
-    --page-width:900px;
-  }
-  body{font-family: 'Roboto', Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px; color:#111;}
-  .wrap{max-width:var(--page-width); margin:0 auto;}
-  .grid{display:grid; grid-template-columns:1fr; gap:14px;}
-  @media(min-width:980px){ .grid{grid-template-columns: 380px 1fr;} }
-  .card{background:var(--paper); border-radius:8px; padding:14px; box-shadow:0 6px 18px rgba(20,30,40,0.06);}
-  h1{margin:0; font-size:20px; color:var(--accent); text-align:center;font-weight:700}
-  .small{font-size:13px;color:var(--muted)}
-  label{display:block; font-weight:500; margin-top:10px; font-size:14px}
-  input[type=text], input[type=number], select, textarea{
-    width:100%; padding:8px 10px; border:1px solid #d8dbe0; border-radius:6px; box-sizing:border-box;
-    font-size:14px; margin-top:6px;
-  }
-  textarea{min-height:56px; resize:vertical;}
-  .row{display:flex; gap:8px;}
-  .col{flex:1}
-  .btn{display:inline-block; padding:10px 14px; border-radius:6px; border:none; cursor:pointer; font-weight:700}
-  .btn-primary{background:var(--accent); color:#fff}
-  .btn-ghost{background:#fff; border:1px solid #ddd}
-  .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
-  .qr-wrap{display:flex; gap:12px; align-items:center}
-  .qr-wrap img{width:92px;height:92px;border-radius:6px;border:1px solid #e6e6e6;object-fit:cover;transition:opacity 0.3s;}
-
-  .preview{padding:18px; background:#fff; border-radius:6px; border:1px solid #e1e1e1}
-  .inv-header{ text-align:center; margin-bottom:18px }
-  .inv-header .inv-title{font-weight:900; font-size:18px; color:var(--accent); margin-bottom:8px}
-  .inv-sub{font-size:13px; color:#333; margin-bottom:10px; line-height:1.25}
-  .inv-meta{display:flex; justify-content:space-between; margin:8px 0; font-size:13px}
-  .inv-table{width:100%; border-collapse:collapse; margin-top:8px;}
-  .inv-table th, .inv-table td{border:1px solid #000; padding:6px; font-size:13px; vertical-align:top}
-  .inv-table th{background:#f3f7f6; font-weight:700}
-  .text-right{ text-align:right }
-  .red{color:#c40000; font-weight:700}
-  .bold{font-weight:700}
-  .notes{font-size:13px; margin-top:12px; color:#333; line-height:1.5}
-  .bank-block{margin-top:14px; font-weight:700; color:#6b3a00; display:flex; align-items:center; gap:16px;}
-  .bank-info{flex:1;}
-  .center{ text-align:center }
-  @media print{
-    body{background:#fff}
-    .no-print{display:none}
-    .wrap{max-width:800px; margin:0}
-    .card, .btn{box-shadow:none}
-    .inv-table th, .inv-table td{font-size:12px}
-    .qr-wrap img{width:80px;height:80px}
-  }
+:root{
+  --accent:#0a8a52;
+  --muted:#666;
+  --paper:#fff;
+  --page-width:900px;
+}
+body{font-family: 'Roboto', Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px; color:#111;}
+.wrap{max-width:var(--page-width); margin:0 auto;}
+.grid{display:grid; grid-template-columns:1fr; gap:14px;}
+@media(min-width:980px){ .grid{grid-template-columns: 380px 1fr;} }
+.card{background:var(--paper); border-radius:8px; padding:14px; box-shadow:0 6px 18px rgba(20,30,40,0.06);}
+h1{margin:0; font-size:20px; color:var(--accent); text-align:center;font-weight:700}
+.small{font-size:13px;color:var(--muted)}
+label{display:block; font-weight:500; margin-top:10px; font-size:14px}
+input[type=text], input[type=number], select, textarea{
+  width:100%; padding:8px 10px; border:1px solid #d8dbe0; border-radius:6px; box-sizing:border-box;
+  font-size:14px; margin-top:6px;
+}
+textarea{min-height:56px; resize:vertical;}
+.row{display:flex; gap:8px;}
+.col{flex:1}
+.btn{display:inline-block; padding:10px 14px; border-radius:6px; border:none; cursor:pointer; font-weight:700}
+.btn-primary{background:var(--accent); color:#fff}
+.btn-ghost{background:#fff; border:1px solid #ddd}
+.actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+.qr-wrap{display:flex; gap:12px; align-items:center}
+.qr-wrap img{width:92px;height:92px;border-radius:6px;border:1px solid #e6e6e6;object-fit:cover}
+/* invoice preview */
+.preview{padding:18px; background:#fff; border-radius:6px; border:1px solid #e1e1e1}
+.inv-header{ text-align:center; margin-bottom:18px }
+.inv-header .inv-title{font-weight:900; font-size:18px; color:var(--accent); margin-bottom:8px}
+.inv-sub{font-size:13px; color:#333; margin-bottom:10px; line-height:1.25}
+.inv-meta{display:flex; justify-content:space-between; margin:8px 0; font-size:13px}
+.inv-table{width:100%; border-collapse:collapse; margin-top:8px;}
+.inv-table th, .inv-table td{border:1px solid #000; padding:6px; font-size:13px; vertical-align:top}
+.inv-table th{background:#f3f7f6; font-weight:700}
+.text-right{ text-align:right }
+.red{color:#c40000; font-weight:700}
+.bold{font-weight:700}
+/* footer notes */
+.notes{font-size:13px; margin-top:12px; color:#333; line-height:1.5}
+.bank-block{margin-top:14px; font-weight:700; color:#6b3a00; display:flex; align-items:center; gap:16px;}
+.bank-info{flex:1;}
+.center{ text-align:center }
+/* print css */
+@media print{
+  body{background:#fff}
+  .no-print{display:none}
+  .wrap{max-width:800px; margin:0}
+  .card, .btn{box-shadow:none}
+  .inv-table th, .inv-table td{font-size:12px}
+  .qr-wrap img{width:80px;height:80px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>S-STORE - HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h1>
-  <p class="small center" style="margin-top:8px; margin-bottom:14px">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</p>
+<h1>S-STORE - HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h1>
+<p class="small center" style="margin-top:8px; margin-bottom:14px">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</p>
 
-  <div class="grid">
-    <!-- left: form -->
-    <div class="card no-print">
-      <h3 style="margin:0 0 6px 0;">Nhập thông tin & chọn Chủ TK</h3>
+<div class="grid">
+<!-- left: form -->
+<div class="card no-print">
+  <h3 style="margin:0 0 6px 0;">Nhập thông tin hóa đơn</h3>
 
-      <label>Chọn chủ tài khoản</label>
-      <select id="ownerSelect"></select>
+  <label>Tên khách hàng</label><input id="tenkhach" type="text" placeholder="Ví dụ: Tú An - 0865...">
+  <div class="row">
+    <div class="col"><label>Số điện thoại</label><input id="sdt" type="text" placeholder="0865..."></div>
+    <div class="col"><label>Địa chỉ</label><input id="diachi" type="text" placeholder="Hà Nội"></div>
+  </div>
 
-      <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
-        <div style="flex:1">
-          <label>Tên chủ TK</label>
-          <input id="ownerName" type="text" readonly>
-          <label style="margin-top:6px">Ngân hàng & STK</label>
-          <input id="ownerBank" type="text" readonly>
-          <label style="margin-top:6px">Liên hệ</label>
-          <input id="ownerContact" type="text" readonly>
-        </div>
-        <div style="width:110px; text-align:center;">
-          <label style="font-size:12px">QR chuyển khoản</label>
-          <div class="qr-wrap">
-            <img id="ownerQR" alt="QR">
-          </div>
-        </div>
-      </div>
-
-      <hr style="margin:12px 0">
-
-      <label>Tên khách hàng</label><input id="tenkhach" type="text" placeholder="Ví dụ: Tú An - 0865...">
-      <div class="row">
-        <div class="col"><label>Số điện thoại</label><input id="sdt" type="text" placeholder="0865..."></div>
-        <div class="col"><label>Địa chỉ</label><input id="diachi" type="text" placeholder="Hà Nội"></div>
-      </div>
-
-      <label>Mặt hàng / Dịch vụ</label><input id="mathang" type="text" placeholder="iPhone 13 128GB ZIN Áp">
-      <div class="row">
-        <div class="col"><label>IMEI / Note</label><input id="imei" type="text"></div>
-        <div class="col"><label>Số lượng</label><input id="soluong" type="number" value="1"></div>
-        <div class="col"><label>Giá (VNĐ)</label><input id="gia" type="number" value="0"></div>
-      </div>
-      <div class="row">
-        <div class="col"><label>Giảm (VNĐ)</label><input id="giam" type="number" value="0"></div>
-        <div class="col"><label>Bảo hành (tháng)</label>
-          <select id="baohanh">
-            <option value="3">3</option>
-            <option value="6">6</option>
-            <option value="9">9</option>
-            <option value="12">12</option>
-          </select>
-        </div>
-        <div class="col"><label>Mã hóa đơn (tự sinh nếu bỏ trống)</label><input id="invoiceId" type="text" placeholder="INV-YYYYMMDD-001"></div>
-      </div>
-
-      <label>Ghi chú</label><textarea id="ghichu" placeholder="Ghi chú..."></textarea>
-
-      <div class="actions">
-        <button class="btn btn-primary" onclick="handleSave(false)">Lưu & Xem</button>
-        <button class="btn btn-primary" onclick="handleSave(true)">Lưu & In</button>
-        <button class="btn btn-ghost" onclick="resetForm()">Xóa form</button>
-      </div>
+  <label>Mặt hàng / Dịch vụ</label><input id="mathang" type="text" placeholder="iPhone 13 128GB ZIN Áp">
+  <div class="row">
+    <div class="col"><label>IMEI / Note</label><input id="imei" type="text"></div>
+    <div class="col"><label>Số lượng</label><input id="soluong" type="number" value="1"></div>
+    <div class="col"><label>Giá (VNĐ)</label><input id="gia" type="number" value="0"></div>
+  </div>
+  <div class="row">
+    <div class="col"><label>Giảm (VNĐ)</label><input id="giam" type="number" value="0"></div>
+    <div class="col"><label>Bảo hành (tháng)</label>
+      <select id="baohanh">
+        <option value="3">3</option>
+        <option value="6">6</option>
+        <option value="9">9</option>
+        <option value="12">12</option>
+      </select>
     </div>
+    <div class="col"><label>Mã hóa đơn (tự sinh nếu bỏ trống)</label><input id="invoiceId" type="text" placeholder="INV-YYYYMMDD-001"></div>
+  </div>
 
-    <!-- right: preview -->
-    <div class="card preview">
-      <div id="previewArea">
-        <div class="inv-header">
-          <div class="inv-title">S-STORE - ĐIỆN THOẠI ĐIỆN MÁY CHÍNH HÃNG</div>
-          <div class="inv-sub">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</div>
-          <div style="margin-top:6px; font-weight:700; font-size:18px;">HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</div>
-        </div>
+  <label>Ghi chú</label><textarea id="ghichu" placeholder="Ghi chú..."></textarea>
 
-        <div id="invoicePreview" style="display:none">
-          <div class="inv-meta">
-            <div>
-              <div><b>Khách hàng:</b> <span id="pvCustomer"></span></div>
-              <div><b>Địa chỉ:</b> <span id="pvAddress"></span></div>
-              <div><b>Ghi chú:</b> <span id="pvNote"></span></div>
-            </div>
-            <div style="text-align:right">
-              <div><b>NGÀY</b></div>
-              <div id="pvDate"></div>
-              <div style="margin-top:8px"><b>Số hóa đơn:</b> <span id="pvInvoiceId"></span></div>
-            </div>
-          </div>
-
-          <table class="inv-table">
-            <thead>
-              <tr>
-                <th style="width:35%">MẶT HÀNG/DỊCH VỤ</th>
-                <th>NOTE/IMEI</th>
-                <th style="width:6%">SL</th>
-                <th style="width:14%">GIÁ</th>
-                <th style="width:12%">GIẢM</th>
-                <th style="width:14%">THANH TOÁN</th>
-              </tr>
-            </thead>
-            <tbody id="pvItems"></tbody>
-            <tfoot>
-              <tr>
-                <td colspan="5" class="text-right bold">TỔNG</td>
-                <td id="pvTotal" class="text-right bold"></td>
-              </tr>
-              <tr>
-                <td colspan="6" class="red bold">BẰNG CHỮ: <span id="pvInWords"></span></td>
-              </tr>
-            </tfoot>
-          </table>
-
-          <div class="notes">
-            <b style="color:#b35d00">* Lưu Ý/Bảo Hành:</b>
-            <ul>
-              <li>Bao check đảm bảo đúng tình trạng khi xuất bán</li>
-              <li id="warrantyLine">Bảo hành 3 tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)</li>
-              <li id="imeiLine">Thiết bị bảo hành đúng IMEI, còn tem BH, chưa can thiệp bên thứ ba</li>
-              <li>Quay video thể hiện tem bảo hành và máy còn nguyên vẹn chưa có can thiệp bên thứ 3 để đảm bảo quyền lợi</li>
-            </ul>
-          </div>
-
-          <div class="bank-block">
-            <div class="bank-info">
-              <div><b>Chủ TK:</b> <span id="pvOwnerName"></span></div>
-              <div id="pvOwnerBank"></div>
-              <div id="pvOwnerContact"></div>
-            </div>
-            <img id="pvQR" alt="QR" style="width:110px;height:110px;border:1px solid #eee;object-fit:cover">
-          </div>
-
-          <p class="center" style="margin-top:16px; font-weight:700;">TRÂN TRỌNG CẢM ƠN</p>
-        </div>
-      </div>
-    </div>
+  <div class="actions">
+    <button class="btn btn-primary" onclick="handleSave()">Lưu vào Google Sheet</button>
+    <button class="btn btn-ghost" onclick="resetForm()">Xóa form</button>
   </div>
 </div>
 
+<!-- right: preview -->
+<div class="card preview">
+<div id="previewArea">
+  <div class="inv-header">
+    <div class="inv-title">S-STORE - ĐIỆN THOẠI ĐIỆN MÁY CHÍNH HÃNG</div>
+    <div class="inv-sub">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</div>
+    <div style="margin-top:6px; font-weight:700; font-size:18px;">HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</div>
+  </div>
+
+  <div id="invoicePreview" style="display:none">
+    <div class="inv-meta">
+      <div>
+        <div><b>Khách hàng:</b> <span id="pvCustomer"></span></div>
+        <div><b>Địa chỉ:</b> <span id="pvAddress"></span></div>
+        <div><b>Ghi chú:</b> <span id="pvNote"></span></div>
+      </div>
+      <div style="text-align:right">
+        <div><b>NGÀY</b></div>
+        <div id="pvDate"></div>
+        <div style="margin-top:8px"><b>Số hóa đơn:</b> <span id="pvInvoiceId"></span></div>
+      </div>
+    </div>
+
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th style="width:35%">MẶT HÀNG/DỊCH VỤ</th>
+          <th>NOTE/IMEI</th>
+          <th style="width:6%">SL</th>
+          <th style="width:14%">GIÁ</th>
+          <th style="width:12%">GIẢM</th>
+          <th style="width:14%">THANH TOÁN</th>
+        </tr>
+      </thead>
+      <tbody id="pvItems">
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5" class="text-right bold">TỔNG</td>
+          <td id="pvTotal" class="text-right bold"></td>
+        </tr>
+        <tr>
+          <td colspan="6" class="red bold">BẰNG CHỮ: <span id="pvInWords"></span></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
 <script>
-// ======== CONFIG ========
-const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx794beBi-22IoJT3WHJ1rXkQEuX1QyIAuRjHA9IU56PTOo8huhQSex9fAPzfcJ5Ic/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx794beBi-22IoJT3WHJ1rXkQEuX1QyIAuRjHA9IU56PTOo8huhQSex9fAPzfcJ5Ic/exec";
 
-// Sample owners
-const OWNERS = [
-  { id: 'owner1', name: 'Ngô Minh Hoàng', bank: 'Techcombank : 9694999999', contact: '0977.818.000', qrLink: 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=Techcombank%20%7C%209694999999' },
-  { id: 'owner2', name: 'Trần Thị A', bank: 'Vietcombank : 0123456789', contact: '0901.234.567', qrLink: 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=Vietcombank%20%7C%200123456789' },
-  { id: 'owner3', name: 'Lê Văn B', bank: 'BIDV : 9876543210', contact: '0912.345.678', qrLink: '' }
-];
-
-function el(id){return document.getElementById(id)}
-
-const ownerSelect = el('ownerSelect');
-OWNERS.forEach(o => { const opt = document.createElement('option'); opt.value = o.id; opt.textContent = o.name; ownerSelect.appendChild(opt); });
-
-function setOwnerById(id){
-  const o = OWNERS.find(x=>x.id===id) || OWNERS[0];
-  el('ownerName').value = o.name;
-  el('ownerBank').value = o.bank;
-  el('ownerContact').value = o.contact;
-  el('pvOwnerName').textContent = o.name;
-  el('pvOwnerBank').textContent = o.bank;
-  el('pvOwnerContact').textContent = 'Liên hệ: ' + o.contact;
-  el('ownerQR').src = o.qrLink || '';
-  el('pvQR').src = o.qrLink || '';
-}
-ownerSelect.addEventListener('change', e=> setOwnerById(e.target.value));
-setOwnerById(ownerSelect.value || OWNERS[0].id);
+function el(id){return document.getElementById(id);}
 
 function numberToWordsVN(num) {
   num = Number(num) || 0;
   if (num === 0) return 'Không đồng';
   const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ'];
   const a = ['không','một','hai','ba','bốn','năm','sáu','bảy','tám','chín'];
-  const read3 = x => { const c=Math.floor(x/100), t=Math.floor((x%100)/10), d=x%10; let s=''; if(c>0)s+=a[c]+' trăm '; if(t>1)s+=a[t]+' mươi '+(d==1?'mốt':(d==5?'lăm':(d>0?a[d]:''))); else if(t==1)s+='mười '+(d>0?(d==5?'lăm':a[d]):''); else if(t==0&&d>0)s+=a[d]; return s.trim();};
-  let s='',i=0; while(num>0){const part=num%1000;if(part>0)s=read3(part)+(units[i]?' '+units[i]+' ':' ')+s;num=Math.floor(num/1000);i++;} return s.replace(/\s+/g,' ').trim().replace(/(^\w)/,m=>m.toUpperCase())+' đồng';
+  const read3 = x => {
+    const c=Math.floor(x/100), t=Math.floor((x%100)/10), d=x%10;
+    let s='';
+    if(c>0)s+=a[c]+' trăm ';
+    if(t>1)s+=a[t]+' mươi '+(d==1?'mốt':(d==5?'lăm':(d>0?a[d]:'')));
+    else if(t==1)s+='mười '+(d>0?(d==5?'lăm':a[d]):'');
+    else if(t==0&&d>0)s+=a[d];
+    return s.trim();
+  };
+  let s='',i=0;
+  while(num>0){const part=num%1000;if(part>0)s=read3(part)+(units[i]?' '+units[i]+' ':' ')+s;num=Math.floor(num/1000);i++;}
+  return s.replace(/\s+/g,' ').trim().replace(/(^\w)/,m=>m.toUpperCase())+' đồng';
 }
 
-function genInvoiceId() { const d = new Date(); const yyyy=d.getFullYear(), mm=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'), t=String(Date.now()).slice(-4); return `INV-${yyyy}${mm}${dd}-${t}`; }
+function genInvoiceId() {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const t = String(Date.now()).slice(-4);
+  return `INV-${yyyy}${mm}${dd}-${t}`;
+}
 
 function renderPreview(data){
   el('pvCustomer').textContent = data.customer || '';
@@ -245,59 +196,60 @@ function renderPreview(data){
   el('pvNote').textContent = data.note || '';
   el('pvDate').textContent = data.date || '';
   el('pvInvoiceId').textContent = data.id || '';
-  const tbody = el('pvItems'); tbody.innerHTML='';
-  const tr = document.createElement('tr');
-  tr.innerHTML=`<td>${data.product||''}</td>
-                <td>${data.imei||''}</td>
-                <td class="text-right">${data.qty||1}</td>
-                <td class="text-right">${data.price||0}</td>
-                <td class="text-right">${data.discount||0}</td>
-                <td class="text-right">${(data.price*data.qty - data.discount)||0}</td>`;
-  tbody.appendChild(tr);
-  el('pvTotal').textContent = (data.price*data.qty - data.discount)||0;
-  el('pvInWords').textContent = numberToWordsVN(data.price*data.qty - data.discount);
+  el('pvItems').innerHTML = `
+    <tr>
+      <td style="text-align:left">${data.product||''}</td>
+      <td style="text-align:left">${data.imei||''}</td>
+      <td>${data.qty}</td>
+      <td class="text-right">${Number(data.price).toLocaleString('vi-VN')}</td>
+      <td class="text-right">${Number(data.discount).toLocaleString('vi-VN')}</td>
+      <td class="text-right">${Number(data.total).toLocaleString('vi-VN')}</td>
+    </tr>
+  `;
+  el('pvTotal').textContent = Number(data.total).toLocaleString('vi-VN');
+  el('pvInWords').textContent = numberToWordsVN(Number(data.total));
   el('invoicePreview').style.display='block';
 }
 
-function handleSave(doPrint){
-  const data = {
-    id: el('invoiceId').value || genInvoiceId(),
-    date: new Date().toLocaleDateString('vi-VN'),
-    customer: el('tenkhach').value,
-    sdt: el('sdt').value,
-    address: el('diachi').value,
-    product: el('mathang').value,
-    imei: el('imei').value,
-    qty: Number(el('soluong').value) || 1,
-    price: Number(el('gia').value) || 0,
-    discount: Number(el('giam').value) || 0,
-    total: (Number(el('gia').value) * Number(el('soluong').value) - Number(el('giam').value)),
-    baohanh: el('baohanh').value,
-    note: el('ghichu').value,
-    ownerName: el('ownerName').value,
-    ownerBank: el('ownerBank').value,
-    ownerContact: el('ownerContact').value
-  };
-  renderPreview(data);
-
-  fetch(SHEET_WEBAPP_URL, {
-    method:'POST',
-    body: JSON.stringify(data),
-    headers:{ 'Content-Type':'application/json' }
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(res.status==='ok'){alert('Lưu thành công!'); if(doPrint) window.print(); }
-    else alert('Lỗi lưu: '+res.message);
-  })
-  .catch(e=>alert('Lỗi gửi dữ liệu: '+e.message));
+function resetForm(){
+  el('tenkhach').value=''; el('sdt').value=''; el('diachi').value='';
+  el('mathang').value=''; el('imei').value=''; el('soluong').value='1';
+  el('gia').value='0'; el('giam').value='0'; el('ghichu').value=''; el('invoiceId').value='';
+  el('baohanh').value='3';
 }
 
-function resetForm(){
-  el('tenkhach').value=''; el('sdt').value=''; el('diachi').value=''; el('mathang').value='';
-  el('imei').value=''; el('soluong').value='1'; el('gia').value='0'; el('giam').value='0';
-  el('baohanh').value='3'; el('invoiceId').value=''; el('ghichu').value='';
-  renderPreview({}); // hide preview
+async function handleSave(){
+  const customer = el('tenkhach').value.trim();
+  const sdt = el('sdt').value.trim();
+  const address = el('diachi').value.trim();
+  const product = el('mathang').value.trim();
+  const imei = el('imei').value.trim();
+  const qty = Number(el('soluong').value) || 1;
+  const price = Number(el('gia').value) || 0;
+  const discount = Number(el('giam').value) || 0;
+  const note = el('ghichu').value || '';
+  const id = el('invoiceId').value.trim() || genInvoiceId();
+  const date = new Date().toLocaleDateString('vi-VN');
+  const total = qty*price - discount;
+  const baohanh = el('baohanh').value;
+
+  const invoice = {id,date,customer: customer + (sdt?(' - '+sdt):''),sdt,address,product,imei,qty,price,discount,total,note,baohanh,
+    ownerName:'Ngô Minh Hoàng', ownerBank:'Techcombank : 9694999999', ownerContact:'0977.818.000'};
+
+  renderPreview(invoice);
+
+  try {
+    const res = await fetch(https://script.google.com/macros/s/AKfycbx794beBi-22IoJT3WHJ1rXkQEuX1QyIAuRjHA9IU56PTOo8huhQSex9fAPzfcJ5Ic/exec,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(invoice)
+    });
+    const data = await res.json();
+    if(data.status==='ok') alert('Đã lưu vào Google Sheet!');
+    else alert('Lỗi lưu dữ liệu: '+data.message);
+  } catch(err){
+    alert('Lỗi gửi dữ liệu: '+err);
+  }
 }
 </script>
 </body>
