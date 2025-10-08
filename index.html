@@ -1,257 +1,152 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>S-STORE • Hóa đơn bán hàng</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --accent:#0a8a52;
-  --muted:#666;
-  --paper:#fff;
-  --page-width:900px;
-}
 body{font-family: 'Roboto', Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px; color:#111;}
-.wrap{max-width:var(--page-width); margin:0 auto;}
-.grid{display:grid; grid-template-columns:1fr; gap:14px;}
-@media(min-width:980px){ .grid{grid-template-columns: 380px 1fr;} }
-.card{background:var(--paper); border-radius:8px; padding:14px; box-shadow:0 6px 18px rgba(20,30,40,0.06);}
-h1{margin:0; font-size:20px; color:var(--accent); text-align:center;font-weight:700}
-.small{font-size:13px;color:var(--muted)}
-label{display:block; font-weight:500; margin-top:10px; font-size:14px}
-input[type=text], input[type=number], select, textarea{
-  width:100%; padding:8px 10px; border:1px solid #d8dbe0; border-radius:6px; box-sizing:border-box;
-  font-size:14px; margin-top:6px;
-}
-textarea{min-height:56px; resize:vertical;}
-.row{display:flex; gap:8px;}
-.col{flex:1}
-.btn{display:inline-block; padding:10px 14px; border-radius:6px; border:none; cursor:pointer; font-weight:700}
-.btn-primary{background:var(--accent); color:#fff}
-.btn-ghost{background:#fff; border:1px solid #ddd}
-.actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
-.qr-wrap{display:flex; gap:12px; align-items:center}
-.qr-wrap img{width:92px;height:92px;border-radius:6px;border:1px solid #e6e6e6;object-fit:cover}
-.preview{padding:18px; background:#fff; border-radius:6px; border:1px solid #e1e1e1; opacity:0; transition: opacity 0.4s;}
-.preview.show{opacity:1;}
-.inv-header{ text-align:center; margin-bottom:18px }
-.inv-header .inv-title{font-weight:900; font-size:18px; color:var(--accent); margin-bottom:8px}
-.inv-sub{font-size:13px; color:#333; margin-bottom:10px; line-height:1.25}
-.inv-meta{display:flex; justify-content:space-between; margin:8px 0; font-size:13px}
-.inv-table{width:100%; border-collapse:collapse; margin-top:8px;}
-.inv-table th, .inv-table td{border:1px solid #000; padding:6px; font-size:13px; vertical-align:top}
-.inv-table th{background:#f3f7f6; font-weight:700}
-.text-right{ text-align:right }
-.red{color:#c40000; font-weight:700}
-.bold{font-weight:700}
-.notes{font-size:13px; margin-top:12px; color:#333; line-height:1.5}
-.bank-block{margin-top:14px; font-weight:700; color:#6b3a00; display:flex; align-items:center; gap:16px;}
-.bank-info{flex:1;}
-.center{ text-align:center }
+.wrap{max-width:900px; margin:0 auto;}
+.card{background:#fff; border-radius:8px; padding:14px; box-shadow:0 6px 18px rgba(20,30,40,0.06);}
+h1{margin:0; font-size:20px; color:#0a8a52; text-align:center;font-weight:700;}
+label{display:block; margin-top:10px; font-weight:500;}
+input, select, textarea{width:100%; padding:8px; margin-top:6px; border:1px solid #d8dbe0; border-radius:6px; box-sizing:border-box;}
+textarea{min-height:56px;}
+.btn{padding:10px 14px; border-radius:6px; border:none; cursor:pointer; font-weight:700;}
+.btn-primary{background:#0a8a52;color:#fff;}
+.btn-ghost{background:#fff;border:1px solid #ddd;}
+.actions{display:flex; gap:8px; margin-top:12px;}
+.preview{margin-top:20px; padding:14px; border:1px solid #ddd; border-radius:6px;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>S-STORE - HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h1>
-  <p class="small center" style="margin-top:8px; margin-bottom:14px">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</p>
+<h1>S-STORE - HÓA ĐƠN BÁN HÀNG</h1>
+<div class="card">
+<label>Tên khách hàng</label><input id="tenkhach" type="text" placeholder="Ví dụ: Tú An - 0865...">
+<label>Số điện thoại</label><input id="sdt" type="text" placeholder="0865...">
+<label>Địa chỉ</label><input id="diachi" type="text" placeholder="Hà Nội">
+<label>Mặt hàng / Dịch vụ</label><input id="mathang" type="text">
+<label>IMEI / Note</label><input id="imei" type="text">
+<label>Số lượng</label><input id="soluong" type="number" value="1">
+<label>Giá (VNĐ)</label><input id="gia" type="number" value="0">
+<label>Giảm (VNĐ)</label><input id="giam" type="number" value="0">
+<label>Bảo hành (tháng)</label>
+<select id="baohanh">
+<option value="3">3</option>
+<option value="6">6</option>
+<option value="9">9</option>
+<option value="12">12</option>
+</select>
+<label>Ghi chú</label><textarea id="ghichu"></textarea>
+<div class="actions">
+<button class="btn btn-primary" onclick="saveInvoice()">Lưu vào Sheet</button>
+<button class="btn btn-ghost" onclick="resetForm()">Xóa form</button>
+</div>
+</div>
 
-  <div class="grid">
-    <div class="card">
-      <h3 style="margin:0 0 6px 0;">Nhập thông tin hóa đơn</h3>
-
-      <label>Tên khách hàng</label><input id="tenkhach" type="text" placeholder="Ví dụ: Tú An - 0865...">
-      <div class="row">
-        <div class="col"><label>Số điện thoại</label><input id="sdt" type="text" placeholder="0865..."></div>
-        <div class="col"><label>Địa chỉ</label><input id="diachi" type="text" placeholder="Hà Nội"></div>
-      </div>
-
-      <label>Mặt hàng / Dịch vụ</label><input id="mathang" type="text" placeholder="iPhone 13 128GB ZIN Áp">
-      <div class="row">
-        <div class="col"><label>IMEI / Note</label><input id="imei" type="text"></div>
-        <div class="col"><label>Số lượng</label><input id="soluong" type="number" value="1"></div>
-        <div class="col"><label>Giá (VNĐ)</label><input id="gia" type="number" value="0"></div>
-      </div>
-      <div class="row">
-        <div class="col"><label>Giảm (VNĐ)</label><input id="giam" type="number" value="0"></div>
-        <div class="col"><label>Bảo hành (tháng)</label>
-          <select id="baohanh">
-            <option value="3">3</option>
-            <option value="6">6</option>
-            <option value="9">9</option>
-            <option value="12">12</option>
-          </select>
-        </div>
-        <div class="col"><label>Mã hóa đơn</label><input id="invoiceId" type="text" placeholder="Tự sinh nếu bỏ trống"></div>
-      </div>
-
-      <label>Ghi chú</label><textarea id="ghichu" placeholder="Ghi chú..."></textarea>
-
-      <div class="actions">
-        <button class="btn btn-primary" onclick="saveInvoice()">Lưu & Xem</button>
-        <button class="btn btn-primary" onclick="saveInvoice(true)">Lưu & In</button>
-        <button class="btn btn-ghost" onclick="resetForm()">Xóa form</button>
-      </div>
-    </div>
-
-    <div class="card preview" id="previewArea">
-      <div class="inv-header">
-        <div class="inv-title">S-STORE - ĐIỆN THOẠI ĐIỆN MÁY CHÍNH HÃNG</div>
-        <div class="inv-sub">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</div>
-        <div style="margin-top:6px; font-weight:700; font-size:18px;">HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</div>
-      </div>
-      <div id="invoicePreview" style="display:none">
-        <div class="inv-meta">
-          <div>
-            <div><b>Khách hàng:</b> <span id="pvCustomer"></span></div>
-            <div><b>Địa chỉ:</b> <span id="pvAddress"></span></div>
-            <div><b>Ghi chú:</b> <span id="pvNote"></span></div>
-          </div>
-          <div style="text-align:right">
-            <div><b>NGÀY</b></div>
-            <div id="pvDate"></div>
-            <div style="margin-top:8px"><b>Số hóa đơn:</b> <span id="pvInvoiceId"></span></div>
-          </div>
-        </div>
-
-        <table class="inv-table">
-          <thead>
-            <tr>
-              <th style="width:35%">MẶT HÀNG/DỊCH VỤ</th>
-              <th>NOTE/IMEI</th>
-              <th style="width:6%">SL</th>
-              <th style="width:14%">GIÁ</th>
-              <th style="width:12%">GIẢM</th>
-              <th style="width:14%">THANH TOÁN</th>
-            </tr>
-          </thead>
-          <tbody id="pvItems"></tbody>
-          <tfoot>
-            <tr>
-              <td colspan="5" class="text-right bold">TỔNG</td>
-              <td id="pvTotal" class="text-right bold"></td>
-            </tr>
-            <tr>
-              <td colspan="6" class="red bold">BẰNG CHỮ: <span id="pvInWords"></span></td>
-            </tr>
-          </tfoot>
-        </table>
-
-        <div class="notes">
-          <b style="color:#b35d00">* Lưu Ý/Bảo Hành:</b>
-          <ul>
-            <li>Bao check đảm bảo đúng tình trạng khi xuất bán</li>
-            <li id="warrantyLine">Bảo hành 3 tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)</li>
-            <li id="imeiLine">Thiết bị bảo hành đúng IMEI, còn tem BH, chưa can thiệp bên thứ ba</li>
-            <li>Quay video thể hiện tem bảo hành và máy còn nguyên vẹn chưa có can thiệp bên thứ 3 để đảm bảo quyền lợi</li>
-          </ul>
-        </div>
-
-        <div class="bank-block">
-          <div class="bank-info">
-            <div><b>Chủ TK:</b> Ngô Minh Hoàng</div>
-            <div>Techcombank : 9694999999</div>
-            <div>Liên hệ: 0977.818.000</div>
-          </div>
-        </div>
-        <p class="center" style="margin-top:16px; font-weight:700;">TRÂN TRỌNG CẢM ƠN</p>
-      </div>
-    </div>
-  </div>
+<div class="preview card" id="preview">
+<h3>Preview Hóa Đơn</h3>
+<div id="previewContent"></div>
+</div>
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx794beBi-22IoJT3WHJ1rXkQEuX1QyIAuRjHA9IU56PTOo8huhQSex9fAPzfcJ5Ic/exec";
+const WEBAPP_URL = "YOUR_WEBAPP_EXEC_URL_HERE"; // Thay bằng link deploy của bạn
 
-function el(id){return document.getElementById(id);}
-
-function numberToWordsVN(num) {
+function numberToWordsVN(num){
   num = Number(num)||0;
-  if(num===0) return "Không đồng";
+  if(num===0) return 'Không đồng';
   const units=['','nghìn','triệu','tỷ','nghìn tỷ'];
   const a=['không','một','hai','ba','bốn','năm','sáu','bảy','tám','chín'];
   const read3=x=>{
-    const c=Math.floor(x/100), t=Math.floor((x%100)/10), d=x%10;
+    const c=Math.floor(x/100),t=Math.floor((x%100)/10),d=x%10;
     let s='';
-    if(c>0) s+=a[c]+' trăm ';
-    if(t>1) s+=a[t]+' mươi '+(d==1?'mốt':(d==5?'lăm':(d>0?a[d]:'')));
-    else if(t==1) s+='mười '+(d>0?(d==5?'lăm':a[d]):'');
-    else if(t==0&&d>0) s+=a[d];
+    if(c>0)s+=a[c]+' trăm ';
+    if(t>1)s+=a[t]+' mươi '+(d==1?'mốt':(d==5?'lăm':(d>0?a[d]:'')));
+    else if(t==1)s+='mười '+(d>0?(d==5?'lăm':a[d]):'');
+    else if(t==0&&d>0)s+=a[d];
     return s.trim();
   };
-  let s='', i=0;
+  let s='',i=0;
   while(num>0){const part=num%1000;if(part>0)s=read3(part)+(units[i]?' '+units[i]+' ':' ')+s;num=Math.floor(num/1000);i++;}
   return s.replace(/\s+/g,' ').trim().replace(/(^\w)/,m=>m.toUpperCase())+' đồng';
 }
 
 function genInvoiceId(){
   const d=new Date();
-  return `INV-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${String(Date.now()).slice(-4)}`;
+  const yyyy=d.getFullYear();
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  const dd=String(d.getDate()).padStart(2,'0');
+  const t=String(Date.now()).slice(-4);
+  return `INV-${yyyy}${mm}${dd}-${t}`;
 }
 
-async function saveInvoice(doPrint=false){
-  const invoice = {
-    id: el('invoiceId').value.trim() || genInvoiceId(),
+function previewInvoice(data){
+  const html = `
+  <p><b>ID:</b> ${data.id}</p>
+  <p><b>Khách hàng:</b> ${data.customer}</p>
+  <p><b>Địa chỉ:</b> ${data.address}</p>
+  <p><b>Sản phẩm:</b> ${data.product}</p>
+  <p><b>IMEI:</b> ${data.imei}</p>
+  <p><b>SL:</b> ${data.qty} | Giá: ${data.price.toLocaleString()} | Giảm: ${data.discount.toLocaleString()} | Tổng: ${data.total.toLocaleString()}</p>
+  <p><b>Bằng chữ:</b> ${numberToWordsVN(data.total)}</p>
+  <p><b>Bảo hành:</b> ${data.baohanh} tháng</p>
+  <p><b>Ghi chú:</b> ${data.note}</p>
+  `;
+  document.getElementById('previewContent').innerHTML = html;
+}
+
+async function saveInvoice(){
+  const invoiceData = {
+    id: genInvoiceId(),
     date: new Date().toLocaleDateString('vi-VN'),
-    customer: el('tenkhach').value.trim(),
-    sdt: el('sdt').value.trim(),
-    address: el('diachi').value.trim(),
-    product: el('mathang').value.trim(),
-    imei: el('imei').value.trim(),
-    qty: Number(el('soluong').value)||1,
-    price: Number(el('gia').value)||0,
-    discount: Number(el('giam').value)||0,
-    total: (Number(el('soluong').value)||1)*(Number(el('gia').value)||0)-(Number(el('giam').value)||0),
-    baohanh: el('baohanh').value,
-    note: el('ghichu').value,
-    ownerName: 'Ngô Minh Hoàng',
-    ownerBank: 'Techcombank : 9694999999',
-    ownerContact: '0977.818.000'
+    customer: document.getElementById('tenkhach').value,
+    sdt: document.getElementById('sdt').value,
+    address: document.getElementById('diachi').value,
+    product: document.getElementById('mathang').value,
+    imei: document.getElementById('imei').value,
+    qty: Number(document.getElementById('soluong').value),
+    price: Number(document.getElementById('gia').value),
+    discount: Number(document.getElementById('giam').value),
+    total: Number(document.getElementById('soluong').value)*Number(document.getElementById('gia').value)-Number(document.getElementById('giam').value),
+    baohanh: document.getElementById('baohanh').value,
+    note: document.getElementById('ghichu').value,
+    ownerName: "Ngô Minh Hoàng",
+    ownerBank: "Techcombank: 9694999999",
+    ownerContact: "0977.818.000"
   };
 
-  try {
-    const res = await fetch(WEB_APP_URL,{
+  previewInvoice(invoiceData);
+
+  try{
+    const res = await fetch(WEBAPP_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(invoice)
+      body:JSON.stringify(invoiceData)
     });
-    const data = await res.json();
-    if(data.status==='ok') alert('Đã lưu vào Google Sheet!');
-    else alert('Lỗi lưu dữ liệu: '+data.message);
-  } catch(err){ alert('Lỗi gửi dữ liệu: '+err); }
-
-  renderPreview(invoice);
-  if(doPrint) setTimeout(()=>window.print(),300);
-}
-
-function renderPreview(data){
-  el('pvCustomer').textContent = data.customer + (data.sdt?(' - '+data.sdt):'');
-  el('pvAddress').textContent = data.address;
-  el('pvNote').textContent = data.note;
-  el('pvDate').textContent = data.date;
-  el('pvInvoiceId').textContent = data.id;
-  el('pvItems').innerHTML = `
-    <tr>
-      <td>${data.product}</td>
-      <td>${data.imei}</td>
-      <td>${data.qty}</td>
-      <td class="text-right">${Number(data.price).toLocaleString('vi-VN')}</td>
-      <td class="text-right">${Number(data.discount).toLocaleString('vi-VN')}</td>
-      <td class="text-right">${Number(data.total).toLocaleString('vi-VN')}</td>
-    </tr>
-  `;
-  el('pvTotal').textContent = Number(data.total).toLocaleString('vi-VN');
-  el('pvInWords').textContent = numberToWordsVN(Number(data.total));
-  el('warrantyLine').textContent = `Bảo hành ${data.baohanh} tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)`;
-  el('invoicePreview').style.display='block';
-  el('previewArea').classList.add('show');
+    const result = await res.json();
+    if(result.status==='ok') alert("Đã lưu vào Google Sheet!");
+    else alert("Lỗi lưu: "+result.message);
+  } catch(err){
+    alert("Lỗi gửi dữ liệu: "+err.message);
+  }
 }
 
 function resetForm(){
-  ['tenkhach','sdt','diachi','mathang','imei','soluong','gia','giam','ghichu','invoiceId'].forEach(id=>el(id).value='');
-  el('baohanh').value='3';
-  el('previewArea').classList.remove('show');
+  document.getElementById('tenkhach').value='';
+  document.getElementById('sdt').value='';
+  document.getElementById('diachi').value='';
+  document.getElementById('mathang').value='';
+  document.getElementById('imei').value='';
+  document.getElementById('soluong').value='1';
+  document.getElementById('gia').value='0';
+  document.getElementById('giam').value='0';
+  document.getElementById('ghichu').value='';
+  document.getElementById('baohanh').value='3';
+  document.getElementById('previewContent').innerHTML='';
 }
 </script>
 </body>
