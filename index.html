@@ -13,12 +13,12 @@
     --paper:#fff;
     --page-width:900px;
   }
-  body{font-family: 'Roboto', Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px; color:#111;}
+  body{font-family: 'Roboto', Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px; color:#111; transition: filter 2s ease, opacity 2s ease;}
+  body.blurred{ filter: blur(6px); opacity:0.3; }
   .wrap{max-width:var(--page-width); margin:0 auto;}
   .grid{display:grid; grid-template-columns:1fr; gap:14px;}
   @media(min-width:980px){ .grid{grid-template-columns: 380px 1fr;} }
   .card{background:var(--paper); border-radius:8px; padding:14px; box-shadow:0 6px 18px rgba(20,30,40,0.06);}
-
   h1{margin:0; font-size:20px; color:var(--accent); text-align:center;font-weight:700}
   .small{font-size:13px;color:var(--muted)}
   label{display:block; font-weight:500; margin-top:10px; font-size:14px}
@@ -35,10 +35,8 @@
   .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
   .qr-wrap{display:flex; gap:12px; align-items:center}
   .qr-wrap img{width:92px;height:92px;border-radius:6px;border:1px solid #e6e6e6;object-fit:cover}
-
-  /* invoice preview */
   .preview{padding:18px; background:#fff; border-radius:6px; border:1px solid #e1e1e1}
-  .inv-header{ text-align:center; margin-bottom:18px } /* tăng khoảng cách */
+  .inv-header{ text-align:center; margin-bottom:18px }
   .inv-header .inv-title{font-weight:900; font-size:18px; color:var(--accent); margin-bottom:8px}
   .inv-sub{font-size:13px; color:#333; margin-bottom:10px; line-height:1.25}
   .inv-meta{display:flex; justify-content:space-between; margin:8px 0; font-size:13px}
@@ -48,17 +46,11 @@
   .text-right{ text-align:right }
   .red{color:#c40000; font-weight:700}
   .bold{font-weight:700}
-
-  /* footer notes */
   .notes{font-size:13px; margin-top:12px; color:#333; line-height:1.5}
   .bank-block{margin-top:14px; font-weight:700; color:#6b3a00; display:flex; align-items:center; gap:16px;}
   .bank-info{flex:1;}
   .center{ text-align:center }
-
-  /* saved invoices list */
   .saved-list{max-height:220px; overflow:auto; margin-top:8px; padding:6px; border:1px dashed #e6e6e6; border-radius:6px}
-
-  /* print css */
   @media print{
     body{background:#fff}
     .no-print{display:none}
@@ -67,331 +59,323 @@
     .inv-table th, .inv-table td{font-size:12px}
     .qr-wrap img{width:80px;height:80px}
   }
+  /* ===== Login overlay ===== */
+  #login-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    opacity: 1;
+    transition: opacity 2s ease;
+    z-index: 1000;
+  }
+  #login-box {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    text-align: center;
+    animation: fadeIn 1.5s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  #login-box input {
+    display:block;
+    width:250px;
+    margin:10px auto;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:16px;
+  }
+  #login-box button {
+    background:#0a8a52;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:6px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  #login-box button:hover { background:#056837; }
+  #logout-btn {
+    position: fixed;
+    top: 10px;
+    right: 15px;
+    background: #c40000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    display: none;
+    z-index: 2000;
+  }
+  #logout-btn:hover { background:#900; }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>S-STORE - HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h1>
-    <p class="small center" style="margin-top:8px; margin-bottom:14px">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</p>
+<!-- Login overlay -->
+<div id="login-container">
+  <div id="login-box">
+    <h2>Đăng nhập S-STORE</h2>
+    <input type="text" id="username" placeholder="Tên đăng nhập" autocomplete="off" />
+    <input type="password" id="password" placeholder="Mật khẩu" />
+    <button id="login-btn">Đăng nhập</button>
+    <p id="login-message" style="color:red; margin-top:10px;"></p>
+  </div>
+</div>
+<button id="logout-btn">Đăng xuất</button>
 
-    <div class="grid">
-      <!-- left: form -->
-      <div class="card no-print">
-        <h3 style="margin:0 0 6px 0;">Nhập thông tin & chọn Chủ TK</h3>
-
-        <label>Chọn chủ tài khoản</label>
-        <select id="ownerSelect"></select>
-
-        <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
-          <div style="flex:1">
-            <label>Tên chủ TK</label>
-            <input id="ownerName" type="text" readonly>
-            <label style="margin-top:6px">Ngân hàng & STK</label>
-            <input id="ownerBank" type="text" readonly>
-            <label style="margin-top:6px">Liên hệ</label>
-            <input id="ownerContact" type="text" readonly>
-          </div>
-          <div style="width:110px; text-align:center;">
-            <label style="font-size:12px">QR chuyển khoản</label>
-            <div class="qr-wrap">
-              <img id="ownerQR" alt="QR">
-            </div>
-          </div>
-        </div>
-
-        <hr style="margin:12px 0">
-
-        <label>Tên khách hàng</label><input id="tenkhach" type="text" placeholder="Ví dụ: Tú An - 0865...">
-        <div class="row">
-          <div class="col"><label>Số điện thoại</label><input id="sdt" type="text" placeholder="0865..."></div>
-          <div class="col"><label>Địa chỉ</label><input id="diachi" type="text" placeholder="Hà Nội"></div>
-        </div>
-
-        <label>Mặt hàng / Dịch vụ</label><input id="mathang" type="text" placeholder="iPhone 13 128GB ZIN Áp">
-        <div class="row">
-          <div class="col"><label>IMEI / Note</label><input id="imei" type="text"></div>
-          <div class="col"><label>Số lượng</label><input id="soluong" type="number" value="1"></div>
-          <div class="col"><label>Giá (VNĐ)</label><input id="gia" type="number" value="0"></div>
-        </div>
-        <div class="row">
-          <div class="col"><label>Giảm (VNĐ)</label><input id="giam" type="number" value="0"></div>
-          <div class="col"><label>Bảo hành (tháng)</label>
-            <select id="baohanh">
-              <option value="3">3</option>
-              <option value="6">6</option>
-              <option value="9">9</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-          <div class="col"><label>Mã hóa đơn (tự sinh nếu bỏ trống)</label><input id="invoiceId" type="text" placeholder="INV-YYYYMMDD-001"></div>
-        </div>
-
-        <label>Ghi chú</label><textarea id="ghichu" placeholder="Ghi chú..."></textarea>
-
-        <div class="actions">
-          <button class="btn btn-primary" onclick="handleSave(false)">Lưu & Xem</button>
-          <button class="btn btn-primary" onclick="handleSave(true)">Lưu & In</button>
-          <button class="btn btn-ghost" onclick="resetForm()">Xóa form</button>
-        </div>
-
-        <h4 style="margin-top:14px; font-size:15px">Hóa đơn đã lưu</h4>
-        <div class="saved-list" id="savedList"></div>
+<div class="wrap">
+<h1>S-STORE - HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h1>
+<p class="small center" style="margin-top:8px; margin-bottom:14px">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</p>
+<div class="grid">
+  <div class="card no-print">
+    <h3 style="margin:0 0 6px 0;">Nhập thông tin & chọn Chủ TK</h3>
+    <label>Chọn chủ tài khoản</label>
+    <select id="ownerSelect"></select>
+    <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
+      <div style="flex:1">
+        <label>Tên chủ TK</label><input id="ownerName" type="text" readonly>
+        <label style="margin-top:6px">Ngân hàng & STK</label><input id="ownerBank" type="text" readonly>
+        <label style="margin-top:6px">Liên hệ</label><input id="ownerContact" type="text" readonly>
       </div>
+      <div style="width:110px; text-align:center;">
+        <label style="font-size:12px">QR chuyển khoản</label>
+        <div class="qr-wrap"><img id="ownerQR" alt="QR"></div>
+      </div>
+    </div>
+    <hr style="margin:12px 0">
+    <label>Tên khách hàng</label><input id="tenkhach" type="text" placeholder="Ví dụ: Tú An - 0865...">
+    <div class="row">
+      <div class="col"><label>Số điện thoại</label><input id="sdt" type="text" placeholder="0865..."></div>
+      <div class="col"><label>Địa chỉ</label><input id="diachi" type="text" placeholder="Hà Nội"></div>
+    </div>
+    <label>Mặt hàng / Dịch vụ</label><input id="mathang" type="text" placeholder="iPhone 13 128GB ZIN Áp">
+    <div class="row">
+      <div class="col"><label>IMEI / Note</label><input id="imei" type="text"></div>
+      <div class="col"><label>Số lượng</label><input id="soluong" type="number" value="1"></div>
+      <div class="col"><label>Giá (VNĐ)</label><input id="gia" type="number" value="0"></div>
+    </div>
+    <div class="row">
+      <div class="col"><label>Giảm (VNĐ)</label><input id="giam" type="number" value="0"></div>
+      <div class="col"><label>Bảo hành (tháng)</label>
+        <select id="baohanh">
+          <option value="3">3</option>
+          <option value="6">6</option>
+          <option value="9">9</option>
+          <option value="12">12</option>
+        </select>
+      </div>
+      <div class="col"><label>Mã hóa đơn (tự sinh nếu bỏ trống)</label><input id="invoiceId" type="text" placeholder="INV-YYYYMMDD-001"></div>
+    </div>
+    <label>Ghi chú</label><textarea id="ghichu" placeholder="Ghi chú..."></textarea>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="handleSave(false)">Lưu & Xem</button>
+      <button class="btn btn-primary" onclick="handleSave(true)">Lưu & In</button>
+      <button class="btn btn-ghost" onclick="resetForm()">Xóa form</button>
+    </div>
+    <h4 style="margin-top:14px; font-size:15px">Hóa đơn đã lưu</h4>
+    <div class="saved-list" id="savedList"></div>
+  </div>
 
-      <!-- right: preview -->
-      <div class="card preview">
-        <div id="previewArea">
-          <div class="inv-header">
-            <div class="inv-title">S-STORE - ĐIỆN THOẠI ĐIỆN MÁY CHÍNH HÃNG</div>
-            <div class="inv-sub">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</div>
-            <div style="margin-top:6px; font-weight:700; font-size:18px;">HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</div>
+  <div class="card preview">
+    <div id="previewArea">
+      <div class="inv-header">
+        <div class="inv-title">S-STORE - ĐIỆN THOẠI ĐIỆN MÁY CHÍNH HÃNG</div>
+        <div class="inv-sub">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</div>
+        <div style="margin-top:6px; font-weight:700; font-size:18px;">HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</div>
+      </div>
+      <div id="invoicePreview" style="display:none">
+        <div class="inv-meta">
+          <div>
+            <div><b>Khách hàng:</b> <span id="pvCustomer"></span></div>
+            <div><b>Địa chỉ:</b> <span id="pvAddress"></span></div>
+            <div><b>Ghi chú:</b> <span id="pvNote"></span></div>
           </div>
-
-          <div id="invoicePreview" style="display:none">
-            <div class="inv-meta">
-              <div>
-                <div><b>Khách hàng:</b> <span id="pvCustomer"></span></div>
-                <div><b>Địa chỉ:</b> <span id="pvAddress"></span></div>
-                <div><b>Ghi chú:</b> <span id="pvNote"></span></div>
-              </div>
-              <div style="text-align:right">
-                <div><b>NGÀY</b></div>
-                <div id="pvDate"></div>
-                <div style="margin-top:8px"><b>Số hóa đơn:</b> <span id="pvInvoiceId"></span></div>
-              </div>
-            </div>
-
-            <table class="inv-table">
-              <thead>
-                <tr>
-                  <th style="width:35%">MẶT HÀNG/DỊCH VỤ</th>
-                  <th>NOTE/IMEI</th>
-                  <th style="width:6%">SL</th>
-                  <th style="width:14%">GIÁ</th>
-                  <th style="width:12%">GIẢM</th>
-                  <th style="width:14%">THANH TOÁN</th>
-                </tr>
-              </thead>
-              <tbody id="pvItems">
-                <!-- populated -->
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="5" class="text-right bold">TỔNG</td>
-                  <td id="pvTotal" class="text-right bold"></td>
-                </tr>
-                <tr>
-                  <td colspan="6" class="red bold">BẰNG CHỮ: <span id="pvInWords"></span></td>
-                </tr>
-              </tfoot>
-            </table>
-
-            <div class="notes">
-              <b style="color:#b35d00">* Lưu Ý/Bảo Hành:</b>
-              <ul>
-                <li>Bao check đảm bảo đúng tình trạng khi xuất bán</li>
-            
-                <li>Quay video thể hiện tem bảo hành và máy còn nguyên vẹn chưa có can thiệp bên thứ 3 để đảm bảo quyền lợi</li>
-				<li id="warrantyLine">Bảo hành 3 tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)</li>
-                <li id="imeiLine">Thiết bị bảo hành đúng IMEI, còn tem BH, chưa can thiệp bên thứ ba</li>
-              </ul>
-            </div>
-
-            <div class="bank-block">
-              <div class="bank-info">
-                <div><b>Chủ TK:</b> <span id="pvOwnerName"></span></div>
-                <div id="pvOwnerBank"></div>
-                <div id="pvOwnerContact"></div>
-              </div>
-              <img id="pvQR" alt="QR" style="width:110px;height:110px;border:1px solid #eee;object-fit:cover">
-            </div>
-
-            <p class="center" style="margin-top:16px; font-weight:700;">TRÂN TRỌNG CẢM ƠN</p>
+          <div style="text-align:right">
+            <div><b>NGÀY</b></div>
+            <div id="pvDate"></div>
+            <div style="margin-top:8px"><b>Số hóa đơn:</b> <span id="pvInvoiceId"></span></div>
           </div>
         </div>
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th style="width:35%">MẶT HÀNG/DỊCH VỤ</th>
+              <th>NOTE/IMEI</th>
+              <th style="width:6%">SL</th>
+              <th style="width:14%">GIÁ</th>
+              <th style="width:12%">GIẢM</th>
+              <th style="width:14%">THANH TOÁN</th>
+            </tr>
+          </thead>
+          <tbody id="pvItems"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-right bold">TỔNG</td>
+              <td id="pvTotal" class="text-right bold"></td>
+            </tr>
+            <tr>
+              <td colspan="6" class="red bold">BẰNG CHỮ: <span id="pvInWords"></span></td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="notes">
+          <b style="color:#b35d00">* Lưu Ý/Bảo Hành:</b>
+          <ul>
+            <li>Bao check đảm bảo đúng tình trạng khi xuất bán</li>
+            <li id="warrantyLine">Bảo hành 3 tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)</li>
+            <li id="imeiLine">Thiết bị bảo hành đúng IMEI, còn tem BH, chưa can thiệp bên thứ ba</li>
+            <li>Quay video thể hiện tem bảo hành và máy còn nguyên vẹn chưa có can thiệp bên thứ 3 để đảm bảo quyền lợi</li>
+          </ul>
+        </div>
+        <div class="bank-block">
+          <div class="bank-info">
+            <div><b>Chủ TK:</b> <span id="pvOwnerName"></span></div>
+            <div id="pvOwnerBank"></div>
+            <div id="pvOwnerContact"></div>
+          </div>
+          <img id="pvQR" alt="QR" style="width:110px;height:110px;border:1px solid #eee;object-fit:cover">
+        </div>
+        <p class="center" style="margin-top:16px; font-weight:700;">TRÂN TRỌNG CẢM ƠN</p>
       </div>
     </div>
   </div>
+</div>
+</div>
 
 <script>
-/* ======= sample owners data (mỗi owner có qrLink) ======= */
+/* ======= sample owners data ======= */
 const OWNERS = [
-  { id: 'owner1', name: 'Ngô Minh Hoàng', bank: 'Techcombank : 9694999999', contact: '0977.818.000', qrLink: 'https://i.postimg.cc/G9wS9VsD/Untitled.png' },
+  { id: 'owner1', name: 'Ngô Minh Hoàng', bank: 'Techcombank : 9694999999', contact: '0977.818.000', qrLink: 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=Techcombank%20%7C%209694999999' },
   { id: 'owner2', name: 'Trần Thị A', bank: 'Vietcombank : 0123456789', contact: '0901.234.567', qrLink: 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=Vietcombank%20%7C%200123456789' },
-  { id: 'owner3', name: 'Lê Văn B', bank: 'BIDV : 9876543210', contact: '0912.345.678', qrLink: '' } // nếu không có qrLink, ảnh sẽ rỗng
+  { id: 'owner3', name: 'Lê Văn B', bank: 'BIDV : 9876543210', contact: '0912.345.678', qrLink: '' }
 ];
-/* ============================================================================================== */
-
 function el(id){return document.getElementById(id)}
-
-// populate owner select
 const ownerSelect = el('ownerSelect');
-OWNERS.forEach(o => {
-  const opt = document.createElement('option');
-  opt.value = o.id;
-  opt.textContent = o.name;
-  ownerSelect.appendChild(opt);
-});
-
-// set default owner and update QR from owner's data
+OWNERS.forEach(o => { const opt = document.createElement('option'); opt.value=o.id; opt.textContent=o.name; ownerSelect.appendChild(opt); });
 function setOwnerById(id){
   const o = OWNERS.find(x=>x.id===id) || OWNERS[0];
   el('ownerName').value = o.name;
   el('ownerBank').value = o.bank;
   el('ownerContact').value = o.contact;
-  // update preview owner info
   el('pvOwnerName').textContent = o.name;
   el('pvOwnerBank').textContent = o.bank;
   el('pvOwnerContact').textContent = 'Liên hệ: ' + o.contact;
-  // QR lấy từ dữ liệu owner
-  if(o.qrLink && o.qrLink.trim() !== ''){
-    el('ownerQR').src = o.qrLink;
-    el('pvQR').src = o.qrLink;
-  } else {
-    el('ownerQR').src = '';
-    el('pvQR').src = '';
-  }
+  if(o.qrLink && o.qrLink.trim() !== ''){ el('ownerQR').src=o.qrLink; el('pvQR').src=o.qrLink; } else { el('ownerQR').src=''; el('pvQR').src=''; }
 }
 ownerSelect.addEventListener('change', e=> setOwnerById(e.target.value));
-setOwnerById(ownerSelect.value || OWNERS[0].id);
+setOwnerById(ownerSelect.value);
 
-/* Number to Vietnamese words */
-function numberToWordsVN(num) {
-  num = Number(num) || 0;
-  if (num === 0) return 'Không đồng';
-  const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ'];
-  const a = ['không','một','hai','ba','bốn','năm','sáu','bảy','tám','chín'];
-  const read3 = x => {
-    const c=Math.floor(x/100), t=Math.floor((x%100)/10), d=x%10;
-    let s='';
-    if(c>0)s+=a[c]+' trăm ';
-    if(t>1)s+=a[t]+' mươi '+(d==1?'mốt':(d==5?'lăm':(d>0?a[d]:'')));
-    else if(t==1)s+='mười '+(d>0?(d==5?'lăm':a[d]):'');
-    else if(t==0&&d>0)s+=a[d];
-    return s.trim();
-  };
-  let s='',i=0;
-  while(num>0){const part=num%1000;if(part>0)s=read3(part)+(units[i]?' '+units[i]+' ':' ')+s;num=Math.floor(num/1000);i++;}
-  return s.replace(/\s+/g,' ').trim().replace(/(^\w)/,m=>m.toUpperCase())+' đồng';
+/* ======= Save & Preview ======= */
+let savedInvoices = JSON.parse(localStorage.getItem('invoices')||'[]');
+function handleSave(print=false){
+  const tenkhach = el('tenkhach').value.trim();
+  const diachi = el('diachi').value.trim();
+  const sdt = el('sdt').value.trim();
+  const mathang = el('mathang').value.trim();
+  const imei = el('imei').value.trim();
+  const soluong = parseInt(el('soluong').value)||1;
+  const gia = parseInt(el('gia').value)||0;
+  const giam = parseInt(el('giam').value)||0;
+  const baohanh = el('baohanh').value;
+  const ghichu = el('ghichu').value.trim();
+  let invoiceId = el('invoiceId').value.trim();
+  if(!invoiceId){ const d = new Date(); invoiceId=`INV-${d.getFullYear()}${d.getMonth()+1}${d.getDate()}-${Math.floor(Math.random()*1000)}`; }
+  const total = (gia - giam) * soluong;
+  const newInvoice = { invoiceId, tenkhach, diachi, sdt, mathang, imei, soluong, gia, giam, baohanh, ghichu, date: new Date().toLocaleDateString() };
+  savedInvoices.push(newInvoice); localStorage.setItem('invoices', JSON.stringify(savedInvoices)); renderSavedList(); renderPreview(newInvoice); if(print) window.print(); 
 }
-
-function genInvoiceId() {
-  const d = new Date();
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth()+1).padStart(2,'0');
-  const dd = String(d.getDate()).padStart(2,'0');
-  const t = String(Date.now()).slice(-4);
-  return `INV-${yyyy}${mm}${dd}-${t}`;
-}
-
-/* render preview */
-function renderPreview(data){
-  el('pvCustomer').textContent = data.customer || '';
-  el('pvAddress').textContent = data.address || '';
-  el('pvNote').textContent = data.note || '';
-  el('pvDate').textContent = data.date || '';
-  el('pvInvoiceId').textContent = data.id || '';
-  el('pvItems').innerHTML = `
-    <tr>
-      <td style="text-align:left">${data.product||''}</td>
-      <td style="text-align:left">${data.imei||''}</td>
-      <td>${data.qty}</td>
-      <td class="text-right">${Number(data.price).toLocaleString('vi-VN')}</td>
-      <td class="text-right">${Number(data.discount).toLocaleString('vi-VN')}</td>
-      <td class="text-right">${Number(data.total).toLocaleString('vi-VN')}</td>
-    </tr>
-  `;
-  el('pvTotal').textContent = Number(data.total).toLocaleString('vi-VN');
-  el('pvInWords').textContent = numberToWordsVN(Number(data.total));
-  el('warrantyLine').textContent = `Bảo hành ${data.baohanh} tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)`;
-  // invoice preview show
-  el('invoicePreview').style.display = 'block';
-}
-
-/* save to localStorage and update saved list */
-function saveInvoiceToLocal(inv){
-  const arr = JSON.parse(localStorage.getItem('sstore_invoices')||'[]');
-  arr.unshift(inv); // newest first
-  localStorage.setItem('sstore_invoices', JSON.stringify(arr));
-  refreshSavedList();
-}
-function refreshSavedList(){
-  const arr = JSON.parse(localStorage.getItem('sstore_invoices')||'[]');
-  const div = el('savedList');
-  div.innerHTML = '';
-  if(arr.length===0){ div.innerHTML = '<div class="small">Chưa có hóa đơn nào.</div>'; return; }
-  arr.forEach(it=>{
-    const row = document.createElement('div');
-    row.style.padding='6px 4px';
-    row.style.borderBottom='1px dashed #eee';
-    row.innerHTML = `<b>${it.id}</b> • ${it.customer} • ${it.date}
-      <div style="margin-top:6px"><button class="btn btn-ghost" style="font-size:12px" onclick='loadInvoice("${it.id}")'>Xem / In</button>
-      <button class="btn btn-ghost" style="font-size:12px;margin-left:6px" onclick='deleteInvoice("${it.id}")'>Xóa</button></div>`;
-    div.appendChild(row);
+function renderSavedList(){
+  const list = el('savedList'); list.innerHTML='';
+  savedInvoices.slice(-20).reverse().forEach(inv=>{
+    const div = document.createElement('div');
+    div.style.padding='6px'; div.style.borderBottom='1px dashed #ccc'; div.style.cursor='pointer';
+    div.textContent=`${inv.invoiceId} - ${inv.tenkhach} - ${inv.mathang} - ${inv.soluong} x ${inv.gia} VNĐ`;
+    div.onclick = ()=> renderPreview(inv);
+    list.appendChild(div);
   });
 }
-function loadInvoice(id){
-  const arr = JSON.parse(localStorage.getItem('sstore_invoices')||'[]');
-  const it = arr.find(x=>x.id===id);
-  if(!it){ alert('Không tìm thấy hóa đơn'); return; }
-  // set owner preview by ownerId (will update QR from owner data)
-  if(it.ownerId) { ownerSelect.value = it.ownerId; setOwnerById(it.ownerId); }
-  renderPreview(it);
-  window.scrollTo({top:0, behavior:'smooth'});
+renderSavedList();
+function renderPreview(inv){
+  el('pvInvoiceId').textContent = inv.invoiceId;
+  el('pvCustomer').textContent = inv.tenkhach + ' | ' + inv.sdt;
+  el('pvAddress').textContent = inv.diachi;
+  el('pvNote').textContent = inv.ghichu;
+  el('pvDate').textContent = inv.date;
+  const tbody = el('pvItems'); tbody.innerHTML='';
+  const tr = document.createElement('tr');
+  tr.innerHTML=`<td>${inv.mathang}</td><td>${inv.imei}</td><td class="text-right">${inv.soluong}</td><td class="text-right">${inv.gia}</td><td class="text-right">${inv.giam}</td><td class="text-right">${(inv.gia-inv.giam)*inv.soluong}</td>`;
+  tbody.appendChild(tr);
+  el('pvTotal').textContent = (inv.gia-inv.giam)*inv.soluong;
+  el('pvInWords').textContent = numberToWords((inv.gia-inv.giam)*inv.soluong) + ' đồng';
+  el('invoicePreview').style.display='block';
 }
-function deleteInvoice(id){
-  if(!confirm('Xóa hóa đơn?')) return;
-  let arr = JSON.parse(localStorage.getItem('sstore_invoices')||'[]');
-  arr = arr.filter(x=>x.id!==id);
-  localStorage.setItem('sstore_invoices', JSON.stringify(arr));
-  refreshSavedList();
-  alert('Đã xóa');
-}
+function resetForm(){ document.querySelectorAll('#tenkhach,#diachi,#sdt,#mathang,#imei,#soluong,#gia,#giam,#invoiceId,#ghichu').forEach(i=>i.value=''); el('baohanh').value='3'; }
 
-/* handle save (preview only or preview + print) */
-function handleSave(doPrint){
-  const ownerId = ownerSelect.value;
-  const owner = OWNERS.find(x=>x.id===ownerId) || OWNERS[0];
-  const customer = el('tenkhach').value.trim();
-  const sdt = el('sdt').value.trim();
-  const address = el('diachi').value.trim();
-  const product = el('mathang').value.trim();
-  const imei = el('imei').value.trim();
-  const qty = Number(el('soluong').value) || 1;
-  const price = Number(el('gia').value) || 0;
-  const discount = Number(el('giam').value) || 0;
-  const note = el('ghichu').value || '';
-  const idInput = el('invoiceId').value.trim();
-  const id = idInput || genInvoiceId();
-  const date = new Date().toLocaleDateString('vi-VN');
-  const total = qty*price - discount;
-  const baohanh = el('baohanh').value;
-
-  const invoice = {
-    id, date, ownerId, ownerName:owner.name, ownerBank:owner.bank, ownerContact:owner.contact,
-    customer: customer + (sdt?(' - ' + sdt):''), sdt, address, product, imei, qty, price, discount, total, note, baohanh
-  };
-
-  renderPreview(invoice);
-  saveInvoiceToLocal(invoice);
-
-  if(doPrint){
-    // small delay to render
-    setTimeout(()=> window.print(), 300);
+/* ====== Number to words (Vietnamese) simplified ===== */
+function numberToWords(n){
+  if(n===0) return 'Không';
+  const dv=['','nghìn','triệu','tỷ','nghìn tỷ','triệu tỷ','tỷ tỷ'];
+  let str='', i=0;
+  while(n>0){
+    let part = n%1000; n=Math.floor(n/1000);
+    if(part>0){ str = read3Digits(part)+' '+dv[i]+' '+str; }
+    i++;
   }
+  return str.trim();
+}
+function read3Digits(n){
+  let c=Math.floor(n/100), t=Math.floor((n%100)/10), u=n%10, s='';
+  if(c>0) s+=c+' trăm ';
+  if(t>1) s+=t+' mươi '+(u>0?u:'');
+  else if(t==1) s+='mười '+(u>0?u:'');
+  else if(t==0 && u>0 && c>0) s+='lẻ '+u;
+  else if(t==0 && u>0) s+=u;
+  return s.trim();
 }
 
-/* reset form */
-function resetForm(){
-  el('tenkhach').value=''; el('sdt').value=''; el('diachi').value='';
-  el('mathang').value=''; el('imei').value=''; el('soluong').value='1';
-  el('gia').value='0'; el('giam').value='0'; el('ghichu').value=''; el('invoiceId').value='';
-  el('baohanh').value='3';
+/* ====== Login system ===== */
+const USERS = [ { username:'admin', password:'123456' } ];
+const loginContainer = el('login-container');
+const logoutBtn = el('logout-btn');
+if(localStorage.getItem('loggedIn')==='true'){
+  loginContainer.style.display='none';
+  logoutBtn.style.display='block';
+  document.body.classList.remove('blurred');
+}else{
+  document.body.classList.add('blurred');
 }
-
-/* init saved list */
-refreshSavedList();
-
+el('login-btn').addEventListener('click',()=>{
+  const username = el('username').value.trim();
+  const password = el('password').value.trim();
+  const message = el('login-message');
+  const found = USERS.find(u=>u.username===username && u.password===password);
+  if(found){
+    message.textContent='';
+    document.body.classList.remove('blurred');
+    loginContainer.style.opacity='0';
+    setTimeout(()=>{
+      loginContainer.style.display='none';
+      logoutBtn.style.display='block';
+      localStorage.setItem('loggedIn','true');
+    },2000);
+  }else{ message.textContent='Sai tên đăng nhập hoặc mật khẩu!'; }
+});
+logoutBtn.addEventListener('click',()=>{
+  localStorage.removeItem('loggedIn');
+  logoutBtn.style.display='none';
+  loginContainer.style.display='flex';
+  setTimeout(()=>{ loginContainer.style.opacity='1'; document.body.classList.add('blurred'); },200);
+});
 </script>
 </body>
 </html>
