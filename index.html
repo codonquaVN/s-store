@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hóa Đơn Bán Hàng & Dịch Vụ</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #000; }
+    input, textarea { width: 100%; padding: 8px; margin: 4px 0; font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+    th, td { border: 1px solid #000; padding: 6px; text-align: center; }
+    h3, h4 { text-align: center; margin: 4px 0; }
+    button { padding: 10px 16px; margin-top: 10px; font-size: 16px; cursor: pointer; }
+
+    .invoice { display: none; }
+    .header { text-align: center; line-height: 1.4; }
+    .footer { margin-top: 20px; font-size: 13px; }
+    .highlight { color: #008000; font-weight: bold; }
+    .warning { color: #d69a00; font-weight: bold; }
+
+    @media print {
+      .no-print { display: none; }
+      .invoice { display: block; }
+      body { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print">
+    <h2>📋 TẠO HÓA ĐƠN BÁN HÀNG</h2>
+    <label>Tên khách hàng:</label>
+    <input id="tenkhach" placeholder="VD: Tú An">
+    <label>Số điện thoại:</label>
+    <input id="sdt" placeholder="0865xxxxxx">
+    <label>Địa chỉ:</label>
+    <input id="diachi" placeholder="VD: Hà Nội">
+    <label>Mặt hàng / dịch vụ:</label>
+    <input id="mathang" placeholder="VD: iPhone 13 128GB ZIN áp">
+    <label>IMEI:</label>
+    <input id="imei" placeholder="VD: D9K2QJ29LT">
+    <label>Số lượng:</label>
+    <input id="soluong" type="number" value="1">
+    <label>Giá:</label>
+    <input id="gia" type="number" placeholder="VD: 11500000">
+    <label>Giảm giá:</label>
+    <input id="giam" type="number" value="0">
+    <label>Ghi chú:</label>
+    <textarea id="ghichu" rows="2" placeholder="Ghi chú thêm..."></textarea>
+    <button onclick="taoHoaDon()">🧾 Tạo & In Hóa Đơn</button>
+  </div>
+
+  <div class="invoice" id="hoadon">
+    <div class="header">
+      <h3 class="highlight">S-STORE - ĐIỆN THOẠI ĐIỆN MÁY CHÍNH HÃNG</h3>
+      <div>Số 1 ngõ 50 Lương Thế Vinh - Hà Nội</div>
+      <h4>HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h4>
+      <p><b>NGÀY:</b> <span id="ngay"></span></p>
+    </div>
+
+    <p><b>Khách hàng:</b> <span id="ten-khach"></span> - <span id="sdt-khach"></span></p>
+    <p><b>Địa chỉ:</b> <span id="diachi-khach"></span></p>
+    <p><b>Ghi chú:</b> <span id="note"></span></p>
+
+    <table>
+      <tr>
+        <th>MẶT HÀNG/DỊCH VỤ</th><th>NOTE/IMEI</th><th>SL</th><th>GIÁ</th><th>GIẢM</th><th>THANH TOÁN</th>
+      </tr>
+      <tr>
+        <td id="hang"></td>
+        <td id="maimei"></td>
+        <td id="soluonghienthi"></td>
+        <td id="giatien"></td>
+        <td id="giamgia"></td>
+        <td id="thanhtoan"></td>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align:right"><b>TỔNG:</b></td>
+        <td id="tongtien"></td>
+      </tr>
+    </table>
+
+    <p style="font-weight:bold;color:red;">BẰNG CHỮ: <span id="bangchu"></span></p>
+
+    <div class="footer">
+      <p class="warning">* Lưu ý / Bảo hành:</p>
+      <ul style="margin:0 0 10px 20px;line-height:1.5;">
+        <li>Bao main/màn zin - bảo đúng tình trạng khi xuất bán.</li>
+        <li>Bảo hành 3 tháng (Không bảo hành hình thức, móp, xước...)</li>
+        <li>Thiết bị bảo hành đúng IMEI, còn tem BH, chưa can thiệp bên thứ ba.</li>
+        <li>Hỗ trợ trả góp qua thẻ tín dụng hoặc các ứng dụng.</li>
+        <li>Khách hàng thu cũ đổi mới sẽ được ưu đãi giảm giá.</li>
+      </ul>
+
+      <p><b>Chủ TK:</b> Ngô Minh Hoàng</p>
+      <p>Techcombank: 9694999999</p>
+      <p>Liên hệ: 0977.818.000</p>
+      <p style="text-align:center;margin-top:20px;">TRÂN TRỌNG CẢM ƠN!</p>
+    </div>
+  </div>
+
+  <script>
+    function numberToWordsVN(num) {
+      const ChuSo = ["không","một","hai","ba","bốn","năm","sáu","bảy","tám","chín"];
+      function docSo(n) {
+        let kq = "";
+        let tram = Math.floor(n/100);
+        let chuc = Math.floor((n%100)/10);
+        let donvi = n%10;
+        if(tram>0){ kq += ChuSo[tram] + " trăm "; }
+        if(chuc>1){ kq += ChuSo[chuc] + " mươi "; if(donvi==1) kq+="mốt"; else if(donvi>0) kq+=ChuSo[donvi];}
+        else if(chuc==1){ kq += "mười "; if(donvi>0) kq+=ChuSo[donvi];}
+        else if(chuc==0 && donvi>0){ kq += ChuSo[donvi];}
+        return kq.trim();
+      }
+      if(num==0) return "Không đồng";
+      let ty = Math.floor(num/1e9);
+      let trieu = Math.floor((num%1e9)/1e6);
+      let nghin = Math.floor((num%1e6)/1e3);
+      let dong = num%1e3;
+      let str="";
+      if(ty>0) str+=docSo(ty)+" tỷ ";
+      if(trieu>0) str+=docSo(trieu)+" triệu ";
+      if(nghin>0) str+=docSo(nghin)+" nghìn ";
+      if(dong>0) str+=docSo(dong);
+      return str.trim() + " đồng";
+    }
+
+    function taoHoaDon() {
+      const ten = document.getElementById("tenkhach").value;
+      const sdt = document.getElementById("sdt").value;
+      const diachi = document.getElementById("diachi").value;
+      const mathang = document.getElementById("mathang").value;
+      const imei = document.getElementById("imei").value;
+      const sl = parseInt(document.getElementById("soluong").value);
+      const gia = parseInt(document.getElementById("gia").value);
+      const giam = parseInt(document.getElementById("giam").value);
+      const ghichu = document.getElementById("ghichu").value;
+
+      const thanhtoan = sl * gia - giam;
+      const today = new Date();
+      const date = today.toLocaleDateString("vi-VN");
+
+      document.getElementById("ngay").textContent = date;
+      document.getElementById("ten-khach").textContent = ten;
+      document.getElementById("sdt-khach").textContent = sdt;
+      document.getElementById("diachi-khach").textContent = diachi;
+      document.getElementById("note").textContent = ghichu;
+      document.getElementById("hang").textContent = mathang;
+      document.getElementById("maimei").textContent = imei;
+      document.getElementById("soluonghienthi").textContent = sl;
+      document.getElementById("giatien").textContent = gia.toLocaleString("vi-VN");
+      document.getElementById("giamgia").textContent = giam.toLocaleString("vi-VN");
+      document.getElementById("thanhtoan").textContent = thanhtoan.toLocaleString("vi-VN");
+      document.getElementById("tongtien").textContent = thanhtoan.toLocaleString("vi-VN");
+      document.getElementById("bangchu").textContent = numberToWordsVN(thanhtoan);
+
+      document.querySelector(".invoice").style.display = "block";
+      window.print();
+    }
+  </script>
+</body>
+</html>
