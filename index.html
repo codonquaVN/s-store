@@ -540,7 +540,7 @@ function renderPreview(inv){
   
   const firstWarranty = inv.products ? inv.products[0].warranty : inv.baohanh;
   if(firstWarranty){
-    el('warrantyLine').textContent = `Bảo hành ${firstWarranty} tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)`;
+    el('warrantyLine').textContent = `Bảo hành ${firstWarranty} tháng (Màn hình BH cảm ứng, không bảo hành hiển thị, ngoại quan: Vỡ - Sọc - Nháy - Mực - Chết Đen...)`;
   }
   
   el('invoicePreview').style.display='block';
