@@ -325,7 +325,7 @@
 <script>
 const OWNERS = [
   { id: 'owner1', name: 'Ngô Minh Hoàng', bank: 'Techcombank : 9694999999', contact: '0977.818.000', qrLink: 'https://i.postimg.cc/4yhDx4cW/hoang.jpg' },
-  { id: 'owner2', name: 'Nguyễn Văn Diễn ', bank: 'Techcombank : 2255992888', contact: '0858.925.890', qrLink: 'https://i.postimg.cc/MT0R2VPR/dien.jpg' },
+  { id: 'owner2', name: 'Nguyễn Văn Diễn ', bank: 'Techcombank : 2255992888', contact: 'Zalo.me/0858.925.890', qrLink: 'https://i.postimg.cc/MT0R2VPR/dien.jpg' },
   { id: 'owner3', name: 'Phạm Trung Thành', bank: 'Vietcombank : 0491000106412', contact: '098.6368.224', qrLink: 'https://i.postimg.cc/9F0416hy/thanh.png' },
   { id: 'owner4', name: 'Đỗ Hồng Phương ', bank: 'MB Bank : 8922228688888', contact: '0982.421.468', qrLink: 'https://i.postimg.cc/Gmh1kRnH/a-ph-ng.jpg' },
   { id: 'owner5', name: 'Quách Hoàng Chinh ', bank: 'Techcombank : 190333180198012', contact: 'xxxx', qrLink: 'https://i.postimg.cc/pVFVTPRz/a-chinh.jpg' },
@@ -616,7 +616,7 @@ function read3Digits(n, hasHigherGroup){
 }
 
 function sendToGoogleSheets(invoice) {
-  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz1WsMoaTgtISLUneoY66tB_7KI9Mxc-8PAIYXfNtvLucjGE9VGDqC55YHDvyZEhwD1/exec';
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwkz0b6zsQBgdFnCGtGDaUFRntJk2L9A5Xr3pxhorMItYu-jIVur6faY7ZZivVOB-Gj/exec';
   
   console.log('🔵 Bắt đầu gửi dữ liệu đến Google Sheets...');
   
@@ -653,12 +653,10 @@ function sendToGoogleSheets(invoice) {
     discount: discountText,
     warranty: warrantyText,
     total: totalAmount,
-    note: invoice.ghichu,
-    owner: invoice.owner || 'N/A'  // ← LẤY TỪ INVOICE
+    note: invoice.ghichu
   };
   
-  console.log('📦 Dữ liệu gửi đi:', data);
-  console.log('👤 Chủ TK:', data.owner);
+  console.log('📦 Dữ liệu:', data);
   
   fetch(WEBAPP_URL, {
     method: 'POST',
@@ -675,8 +673,6 @@ function sendToGoogleSheets(invoice) {
     console.error('❌ Lỗi:', error);
   });
 }
-
-
 
 const USERS = [ { username:'admin', password:'qwerty' } ];
 const loginContainer = el('login-container');
