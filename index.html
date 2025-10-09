@@ -638,7 +638,7 @@ function read3Digits(n){
 }
 
 /* ====== Login system ===== */
-const USERS = [ { username:'admin', password:'qưerty' } ];
+const USERS = [ { username:'admin', password:'qwerty' } ];
 const loginContainer = el('login-container');
 const logoutBtn = el('logout-btn');
 if(localStorage.getItem('loggedIn')==='true'){
@@ -673,5 +673,63 @@ logoutBtn.addEventListener('click',()=>{
   }
 });
 </script>
+  <!DOCTYPE html>
+<html lang="vi">
+<head>
+<!-- ... phần head ... -->
+</head>
+<body>
+
+<!-- ... tất cả nội dung HTML của bạn ... -->
+
+<!-- Code JavaScript chính của bạn -->
+<script>
+// ... code JavaScript chính của bạn ...
+</script>
+
+<!-- ===== THÊM CODE BẢO VỆ VÀO ĐÂY ===== -->
+<script>
+// Chặn chuột phải
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Chặn F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S
+document.addEventListener('keydown', function(e) {
+  // F12
+  if(e.keyCode == 123) {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+  if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+U (View Source)
+  if(e.ctrlKey && e.keyCode == 85) {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+S (Save Page)
+  if(e.ctrlKey && e.keyCode == 83) {
+    e.preventDefault();
+    return false;
+  }
+  // Ctrl+P (Print) - NHƯNG BẠN CẦN IN HÓA ĐƠN NÊN XÓA DÒNG NÀY ĐI
+  if(e.ctrlKey && e.keyCode == 80) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+// Chặn Ctrl+C (Copy)
+document.addEventListener('copy', e => e.preventDefault());
+
+// Chặn Select Text
+document.onselectstart = function() { return false; }
+</script>
+
+</body>
+</html>
+
 </body>
 </html>
