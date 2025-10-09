@@ -472,6 +472,9 @@ function handleSave(print=false){
   const invoiceId = el('invoiceId').value.trim();
   const products = getProducts();
   
+  // LẤY TÊN CHỦ TÀI KHOẢN
+  const ownerName = el('ownerName').value.trim();
+  
   const dateObj = new Date(invoiceDate);
   const displayDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
   
@@ -483,7 +486,8 @@ function handleSave(print=false){
     ghichu, 
     products,
     date: displayDate,
-    dateRaw: invoiceDate
+    dateRaw: invoiceDate,
+    owner: ownerName  // LƯU CHỦ TÀI KHOẢN
   };
   
   savedInvoices.push(newInvoice); 
@@ -616,7 +620,7 @@ function read3Digits(n, hasHigherGroup){
 }
 
 function sendToGoogleSheets(invoice) {
-  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyBcIhlOB_ss0hVLWMDIrVwAIzOQmG5Vt_cQcH458-mJtCz7GKcSCcu5og8Msvz9kFvTg/exec';
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz6-x1ldQKoqAJjhYSjipHI1unoyBr_tZnKg-Vq9T-MF54bm4bEmayMWczzPSwDN44A/exec';
   
   console.log('🔵 Bắt đầu gửi dữ liệu đến Google Sheets...');
   
@@ -653,10 +657,12 @@ function sendToGoogleSheets(invoice) {
     discount: discountText,
     warranty: warrantyText,
     total: totalAmount,
-    note: invoice.ghichu
+    note: invoice.ghichu,
+    owner: invoice.owner || 'Không xác định'  // GỬI TÊN CHỦ TÀI KHOẢN
   };
   
-  console.log('📦 Dữ liệu:', data);
+  console.log('📦 Dữ liệu gửi đi:', data);
+  console.log('👤 Chủ TK:', data.owner);
   
   fetch(WEBAPP_URL, {
     method: 'POST',
@@ -667,7 +673,7 @@ function sendToGoogleSheets(invoice) {
     body: JSON.stringify(data)
   })
   .then(() => {
-    console.log('✅ Đã gửi request thành công! Kiểm tra Sheet & Email sau 5-10 giây.');
+    console.log('✅ Đã gửi request! Kiểm tra Sheet & Email sau 5-10 giây.');
   })
   .catch(error => {
     console.error('❌ Lỗi:', error);
