@@ -57,10 +57,7 @@
   .bold{font-weight:700}
   .notes{font-size:13px; margin-top:12px; color:#333; line-height:1.5}
   
-  /* Form sản phẩm card style */
-  .product-cards{
-    margin-top:12px;
-  }
+  .product-cards{margin-top:12px;}
   .product-card{
     background:#f8f9fa;
     border:2px solid #e1e8ed;
@@ -85,7 +82,6 @@
     padding:9px 11px;
   }
   
-  /* Căn giữa text trong phần thông tin chủ TK của preview */
   .bank-block{
     margin-top:14px; 
     font-weight:700; 
@@ -117,7 +113,7 @@
     .inv-table th, .inv-table td{font-size:12px; padding:6px}
     .qr-wrap img{width:80px;height:80px}
   }
-  /* ===== Login overlay ===== */
+  
   #login-container {
     position: fixed;
     inset: 0;
@@ -180,7 +176,7 @@
 </style>
 </head>
 <body>
-<!-- Login overlay -->
+
 <div id="login-container">
   <div id="login-box">
     <h2>Đăng nhập S-STORE</h2>
@@ -219,7 +215,7 @@
     <label>Ngày hóa đơn</label>
     <input id="invoiceDate" type="date">
     
-    <label>Tên khách hàng *</label>
+    <label>Tên khách hàng</label>
     <input id="tenkhach" type="text" placeholder="Ví dụ: Nguyễn Văn A">
     
     <div class="row">
@@ -237,16 +233,13 @@
     
     <h3 style="margin-bottom:8px">🛒 Sản phẩm / Dịch vụ</h3>
     
-    <div class="product-cards" id="productCards">
-      <!-- Product cards will be inserted here -->
-    </div>
+    <div class="product-cards" id="productCards"></div>
     
     <button type="button" class="btn btn-ghost btn-sm" onclick="addProductCard()" style="width:100%">+ Thêm sản phẩm</button>
     
     <label>Ghi chú</label>
     <textarea id="ghichu" placeholder="Ghi chú thêm về đơn hàng..."></textarea>
     
-    <!-- Ẩn input mã hóa đơn -->
     <input id="invoiceId" type="hidden">
     
     <div class="actions">
@@ -308,7 +301,6 @@
           </ul>
         </div>
         
-        <!-- Phần thông tin chủ TK: giữ nguyên layout flex, chỉ căn giữa text -->
         <div class="bank-block">
           <div class="bank-info">
             <div><b>Chủ TK:</b> <span id="pvOwnerName"></span></div>
@@ -316,12 +308,11 @@
             <div id="pvOwnerContact"></div>
           </div>
           <div style="text-align:center;">
-  <img id="pvQR" alt="QR" style="width:110px;height:110px;border:1px solid #eee;object-fit:cover">
-  <div style="color:#c40000; font-size:11px; margin-top:6px; line-height:1.4; font-weight:500; max-width:110px; margin-left:auto; margin-right:auto;">
-    Quý khách vui lòng chụp lại ảnh chuyển khoản để tiện đối chiếu
-  </div>
-</div>
-
+            <img id="pvQR" alt="QR" style="width:110px;height:110px;border:1px solid #eee;object-fit:cover">
+            <div style="color:#c40000; font-size:11px; margin-top:6px; line-height:1.4; font-weight:500; max-width:110px; margin-left:auto; margin-right:auto;">
+              Quý khách vui lòng chụp lại ảnh chuyển khoản để tiện đối chiếu
+            </div>
+          </div>
         </div>
         
         <p class="center" style="margin-top:16px; font-weight:700;">TRÂN TRỌNG CẢM ƠN</p>
@@ -332,7 +323,6 @@
 </div>
 
 <script>
-/* ======= sample owners data ======= */
 const OWNERS = [
   { id: 'owner1', name: 'Ngô Minh Hoàng', bank: 'Techcombank : 9694999999', contact: '0977.818.000', qrLink: 'https://i.postimg.cc/4yhDx4cW/hoang.jpg' },
   { id: 'owner2', name: 'Nguyễn Văn Diễn ', bank: 'Techcombank : 2255992888', contact: 'Zalo.me/0858.925.890', qrLink: 'https://i.postimg.cc/MT0R2VPR/dien.jpg' },
@@ -359,13 +349,11 @@ function setOwnerById(id){
 ownerSelect.addEventListener('change', e=> setOwnerById(e.target.value));
 setOwnerById(ownerSelect.value);
 
-/* ======= Quản lý product cards ======= */
 let productCardCount = 0;
 
 function createProductCard(){
   productCardCount++;
   const cardId = `product-${productCardCount}`;
-  
   const card = document.createElement('div');
   card.className = 'product-card';
   card.id = cardId;
@@ -374,13 +362,10 @@ function createProductCard(){
       <span class="product-number">Sản phẩm #${productCardCount}</span>
       <button type="button" class="btn btn-danger btn-sm" onclick="removeProductCard('${cardId}')">× Xóa</button>
     </div>
-    
-    <label>Tên sản phẩm / Dịch vụ *</label>
+    <label>Tên sản phẩm / Dịch vụ</label>
     <input type="text" class="product-name" placeholder="Ví dụ: iPhone 13 128GB Trắng">
-    
     <label>IMEI / Ghi chú</label>
     <input type="text" class="product-imei" placeholder="Số IMEI hoặc ghi chú">
-    
     <div class="row">
       <div class="col">
         <label>Số lượng</label>
@@ -391,7 +376,6 @@ function createProductCard(){
         <input type="number" class="product-price" value="0" min="0">
       </div>
     </div>
-    
     <div class="row">
       <div class="col">
         <label>Giảm giá (VNĐ)</label>
@@ -408,7 +392,6 @@ function createProductCard(){
       </div>
     </div>
   `;
-  
   return card;
 }
 
@@ -442,7 +425,6 @@ function updateRemoveButtons(){
 function getProducts(){
   const cards = document.querySelectorAll('.product-card');
   const products = [];
-  
   cards.forEach(card => {
     const name = card.querySelector('.product-name').value.trim();
     const imei = card.querySelector('.product-imei').value.trim();
@@ -450,16 +432,13 @@ function getProducts(){
     const price = parseInt(card.querySelector('.product-price').value) || 0;
     const discount = parseInt(card.querySelector('.product-discount').value) || 0;
     const warranty = card.querySelector('.product-warranty').value;
-    
     if(name){
       products.push({ name, imei, qty, price, discount, warranty });
     }
   });
-  
   return products;
 }
 
-// Khởi tạo 1 product card ban đầu
 window.addEventListener('DOMContentLoaded', function() {
   addProductCard();
   const today = new Date().toISOString().split('T')[0];
@@ -467,27 +446,21 @@ window.addEventListener('DOMContentLoaded', function() {
   el('invoiceId').value = generateInvoiceId(today);
 });
 
-/* ======= Tự động tạo mã hóa đơn theo ngày (ẩn) ======= */
 function generateInvoiceId(dateValue) {
   const d = dateValue ? new Date(dateValue) : new Date();
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   const dateStr = `${year}${month}${day}`;
-  
-  // Đếm số hóa đơn cùng ngày
   const sameDate = savedInvoices.filter(inv => inv.invoiceId && inv.invoiceId.includes(dateStr));
   const sequence = String(sameDate.length + 1).padStart(3, '0');
-  
   return `INV-${dateStr}-${sequence}`;
 }
 
-// Cập nhật mã hóa đơn khi thay đổi ngày
 el('invoiceDate').addEventListener('change', function() {
   el('invoiceId').value = generateInvoiceId(this.value);
 });
 
-/* ======= Save & Preview ======= */
 let savedInvoices = JSON.parse(localStorage.getItem('invoices')||'[]');
 
 function handleSave(print=false){
@@ -497,21 +470,8 @@ function handleSave(print=false){
   const ghichu = el('ghichu').value.trim();
   const invoiceDate = el('invoiceDate').value;
   const invoiceId = el('invoiceId').value.trim();
-  
-  // Lấy danh sách sản phẩm
   const products = getProducts();
   
-  if(!tenkhach){
-    alert('⚠️ Vui lòng nhập tên khách hàng!');
-    return;
-  }
-  
-  if(products.length === 0){
-    alert('⚠️ Vui lòng nhập ít nhất một sản phẩm!');
-    return;
-  }
-  
-  // Format ngày hiển thị
   const dateObj = new Date(invoiceDate);
   const displayDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
   
@@ -528,10 +488,8 @@ function handleSave(print=false){
   
   savedInvoices.push(newInvoice); 
   localStorage.setItem('invoices', JSON.stringify(savedInvoices)); 
-  renderPreview(newInvoice); 
-  // ===== THÊM DÒNG NÀY =====
-sendToGoogleSheets(newInvoice);
-  // Tạo mã mới cho hóa đơn tiếp theo
+  renderPreview(newInvoice);
+  sendToGoogleSheets(newInvoice);
   el('invoiceId').value = generateInvoiceId(invoiceDate);
   
   if(print){
@@ -554,15 +512,12 @@ function renderPreview(inv){
   
   const tbody = el('pvItems'); 
   tbody.innerHTML='';
-  
   let totalAmount = 0;
   
-  // Xử lý danh sách sản phẩm mới
   if(inv.products && inv.products.length > 0){
     inv.products.forEach(product => {
       const itemTotal = (product.price - product.discount) * product.qty;
       totalAmount += itemTotal;
-      
       const tr = document.createElement('tr');
       tr.innerHTML=`
         <td>${product.name}</td>
@@ -574,25 +529,11 @@ function renderPreview(inv){
       `;
       tbody.appendChild(tr);
     });
-  } else {
-    // Tương thích với dữ liệu cũ (1 sản phẩm)
-    totalAmount = (inv.gia - inv.giam) * inv.soluong;
-    const tr = document.createElement('tr');
-    tr.innerHTML=`
-      <td>${inv.mathang}</td>
-      <td>${inv.imei || ''}</td>
-      <td class="text-right">${inv.soluong}</td>
-      <td class="text-right">${formatMoney(inv.gia)}</td>
-      <td class="text-right">${formatMoney(inv.giam)}</td>
-      <td class="text-right">${formatMoney(totalAmount)}</td>
-    `;
-    tbody.appendChild(tr);
   }
   
   el('pvTotal').textContent = formatMoney(totalAmount);
   el('pvInWords').textContent = numberToWords(totalAmount) + ' đồng';
   
-  // Cập nhật thông tin bảo hành (lấy từ sản phẩm đầu tiên)
   const firstWarranty = inv.products ? inv.products[0].warranty : inv.baohanh;
   if(firstWarranty){
     el('warrantyLine').textContent = `Bảo hành ${firstWarranty} tháng (Không bảo hành hình thức: rơi vỡ, vào nước...)`;
@@ -605,33 +546,25 @@ function resetForm(){
   if(!confirm('Bạn có chắc chắn muốn xóa toàn bộ form?')){
     return;
   }
-  
   el('tenkhach').value = '';
   el('diachi').value = '';
   el('sdt').value = '';
   el('ghichu').value = '';
-  
-  // Reset product cards
   const container = el('productCards');
   container.innerHTML = '';
   productCardCount = 0;
   addProductCard();
-  
   const today = new Date().toISOString().split('T')[0];
   el('invoiceDate').value = today;
   el('invoiceId').value = generateInvoiceId(today);
 }
 
-/* ====== Number to words (Vietnamese) ===== */
-/* ====== Number to words (Vietnamese) - ĐÃ SỬA ===== */
 function numberToWords(n){
   if(n === 0) return 'Không';
   if(n < 0) return 'Âm ' + numberToWords(-n);
-  
   const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ', 'triệu tỷ'];
   let result = '';
   let unitIndex = 0;
-  
   while(n > 0){
     let group = n % 1000;
     if(group > 0){
@@ -641,29 +574,21 @@ function numberToWords(n){
     n = Math.floor(n / 1000);
     unitIndex++;
   }
-  
-  // Viết hoa chữ cái đầu
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
 function read3Digits(n, hasHigherGroup){
   if(n === 0) return '';
-  
   const ones = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
-  
   let result = '';
   let hundreds = Math.floor(n / 100);
   let tens = Math.floor((n % 100) / 10);
   let unit = n % 10;
-  
-  // Hàng trăm
   if(hundreds > 0){
     result += ones[hundreds] + ' trăm';
   } else if(hasHigherGroup) {
     result += 'không trăm';
   }
-  
-  // Hàng chục
   if(tens > 1){
     result += (result ? ' ' : '') + ones[tens] + ' mươi';
     if(unit === 1){
@@ -678,7 +603,7 @@ function read3Digits(n, hasHigherGroup){
     if(unit > 0){
       result += ' ' + ones[unit];
     }
-  } else { // tens === 0
+  } else {
     if(unit > 0){
       if(hundreds > 0 || hasHigherGroup){
         result += ' lẻ ' + ones[unit];
@@ -687,12 +612,13 @@ function read3Digits(n, hasHigherGroup){
       }
     }
   }
-  
   return result.trim();
 }
-/* ===== GỬI DỮ LIỆU ĐẾN GOOGLE SHEETS ===== */
+
 function sendToGoogleSheets(invoice) {
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz6-x1ldQKoqAJjhYSjipHI1unoyBr_tZnKg-Vq9T-MF54bm4bEmayMWczzPSwDN44A/exec';
+  
+  console.log('🔵 Bắt đầu gửi dữ liệu đến Google Sheets...');
   
   let totalAmount = 0;
   let productsText = '';
@@ -730,6 +656,8 @@ function sendToGoogleSheets(invoice) {
     note: invoice.ghichu
   };
   
+  console.log('📦 Dữ liệu:', data);
+  
   fetch(WEBAPP_URL, {
     method: 'POST',
     mode: 'no-cors',
@@ -739,15 +667,13 @@ function sendToGoogleSheets(invoice) {
     body: JSON.stringify(data)
   })
   .then(() => {
-    console.log('✅ Đã ghi vào Google Sheets và gửi email đến nguyenvandienfb@gmail.com');
+    console.log('✅ Đã gửi request thành công! Kiểm tra Sheet & Email sau 5-10 giây.');
   })
   .catch(error => {
-    console.error('❌ Lỗi khi ghi Google Sheets:', error);
+    console.error('❌ Lỗi:', error);
   });
 }
 
-
-/* ====== Login system ===== */
 const USERS = [ { username:'admin', password:'qwerty' } ];
 const loginContainer = el('login-container');
 const logoutBtn = el('logout-btn');
@@ -783,63 +709,28 @@ logoutBtn.addEventListener('click',()=>{
   }
 });
 </script>
-  <!DOCTYPE html>
-<html lang="vi">
-<head>
-<!-- ... phần head ... -->
-</head>
-<body>
 
-<!-- ... tất cả nội dung HTML của bạn ... -->
-
-<!-- Code JavaScript chính của bạn -->
 <script>
-// ... code JavaScript chính của bạn ...
-</script>
-
-<!-- ===== THÊM CODE BẢO VỆ VÀO ĐÂY ===== -->
-<script>
-// Chặn chuột phải
 document.addEventListener('contextmenu', e => e.preventDefault());
-
-// Chặn F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S
 document.addEventListener('keydown', function(e) {
-  // F12
   if(e.keyCode == 123) {
     e.preventDefault();
     return false;
   }
-  // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
   if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) {
     e.preventDefault();
     return false;
   }
-  // Ctrl+U (View Source)
   if(e.ctrlKey && e.keyCode == 85) {
     e.preventDefault();
     return false;
   }
-  // Ctrl+S (Save Page)
   if(e.ctrlKey && e.keyCode == 83) {
     e.preventDefault();
     return false;
   }
-  // Ctrl+P (Print) - NHƯNG BẠN CẦN IN HÓA ĐƠN NÊN XÓA DÒNG NÀY ĐI
-  if(e.ctrlKey && e.keyCode == 80) {
-    e.preventDefault();
-    return false;
-  }
 });
-
-// Chặn Ctrl+C (Copy)
-document.addEventListener('copy', e => e.preventDefault());
-
-// Chặn Select Text
-document.onselectstart = function() { return false; }
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
