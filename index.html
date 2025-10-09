@@ -640,9 +640,6 @@ function sendToGoogleSheets(invoice) {
     });
   }
   
-  // Lấy tên chủ TK hiện tại
-  const ownerName = el('ownerName').value.trim();
-  
   const data = {
     datetime: new Date().toLocaleString('vi-VN'),
     invoiceId: invoice.invoiceId,
@@ -657,10 +654,11 @@ function sendToGoogleSheets(invoice) {
     warranty: warrantyText,
     total: totalAmount,
     note: invoice.ghichu,
-    owner: ownerName  // ← THÊM DÒNG NÀY
+    owner: invoice.owner || 'N/A'  // ← LẤY TỪ INVOICE
   };
   
-  console.log('📦 Dữ liệu:', data);
+  console.log('📦 Dữ liệu gửi đi:', data);
+  console.log('👤 Chủ TK:', data.owner);
   
   fetch(WEBAPP_URL, {
     method: 'POST',
@@ -677,6 +675,7 @@ function sendToGoogleSheets(invoice) {
     console.error('❌ Lỗi:', error);
   });
 }
+
 
 
 const USERS = [ { username:'admin', password:'qwerty' } ];
