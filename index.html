@@ -658,11 +658,11 @@ function sendToGoogleSheets(invoice) {
     warranty: warrantyText,
     total: totalAmount,
     note: invoice.ghichu,
-    owner: invoice.owner || 'Không xác định'  // GỬI TÊN CHỦ TÀI KHOẢN
+    owner: invoice.owner || 'Không xác định'  // ← ĐÚNG
   };
   
   console.log('📦 Dữ liệu gửi đi:', data);
-  console.log('👤 Chủ TK:', data.owner);
+  console.log('👤 Chủ TK:', data.owner);  // ← ĐÚNG
   
   fetch(WEBAPP_URL, {
     method: 'POST',
@@ -679,6 +679,7 @@ function sendToGoogleSheets(invoice) {
     console.error('❌ Lỗi:', error);
   });
 }
+
 
 const USERS = [ { username:'admin', password:'qwerty' } ];
 const loginContainer = el('login-container');
