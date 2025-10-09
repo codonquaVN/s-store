@@ -541,8 +541,8 @@ function formatMoney(n){
 function renderPreview(inv){
   el('pvInvoiceId').textContent = inv.invoiceId;
   el('pvCustomer').textContent = inv.tenkhach + (inv.sdt ? ' | ' + inv.sdt : '');
-  el('pvAddress').textContent = inv.diachi || 'N/A';
-  el('pvNote').textContent = inv.ghichu || 'N/A';
+  el('pvAddress').textContent = inv.diachi || '';
+  el('pvNote').textContent = inv.ghichu || '';
   el('pvDate').textContent = inv.date;
   
   const tbody = el('pvItems'); 
@@ -638,7 +638,7 @@ function read3Digits(n){
 }
 
 /* ====== Login system ===== */
-const USERS = [ { username:'admin', password:'123456' } ];
+const USERS = [ { username:'admin', password:'qưerty' } ];
 const loginContainer = el('login-container');
 const logoutBtn = el('logout-btn');
 if(localStorage.getItem('loggedIn')==='true'){
