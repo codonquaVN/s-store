@@ -622,7 +622,7 @@ function read3Digits(n, hasHigherGroup){
 function sendToGoogleSheets(invoice) {
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz6-x1ldQKoqAJjhYSjipHI1unoyBr_tZnKg-Vq9T-MF54bm4bEmayMWczzPSwDN44A/exec';
   
-  console.log('🔵 Bắt đầu gửi dữ liệu đến Google Sheets...');
+  console.log('🔵 Bắt đầu gửi dữ liệu...');
   
   let totalAmount = 0;
   let productsText = '';
@@ -658,27 +658,38 @@ function sendToGoogleSheets(invoice) {
     warranty: warrantyText,
     total: totalAmount,
     note: invoice.ghichu,
-    owner: invoice.owner || 'Không xác định'  // ← ĐÚNG
+    owner: invoice.owner || 'Không xác định'
   };
   
-  console.log('📦 Dữ liệu gửi đi:', data);
-  console.log('👤 Chủ TK:', data.owner);  // ← ĐÚNG
+  console.log('📦 Dữ liệu:', data);
+  console.log('👤 Chủ TK:', data.owner);
   
-  fetch(WEBAPP_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  })
-  .then(() => {
-    console.log('✅ Đã gửi request! Kiểm tra Sheet & Email sau 5-10 giây.');
-  })
-  .catch(error => {
-    console.error('❌ Lỗi:', error);
-  });
+  // Dùng XMLHttpRequest (tương thích tốt với cả PC và Mobile)
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', WEBAPP_URL, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  
+  xhr.onload = function() {
+    console.log('✅ Đã gửi thành công!');
+  };
+  
+  xhr.onerror = function() {
+    console.error('❌ Lỗi kết nối!');
+  };
+  
+  xhr.ontimeout = function() {
+    console.error('⏱️ Timeout - mạng quá chậm!');
+  };
+  
+  xhr.timeout = 30000; // 30 giây
+  
+  try {
+    xhr.send(JSON.stringify(data));
+  } catch(e) {
+    console.error('❌ Exception:', e);
+  }
 }
+
 
 
 const USERS = [ { username:'admin', password:'qwerty' } ];
