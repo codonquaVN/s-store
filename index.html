@@ -529,7 +529,8 @@ function handleSave(print=false){
   savedInvoices.push(newInvoice); 
   localStorage.setItem('invoices', JSON.stringify(savedInvoices)); 
   renderPreview(newInvoice); 
-  
+  // ===== THÊM DÒNG NÀY =====
+sendToGoogleSheets(newInvoice);
   // Tạo mã mới cho hóa đơn tiếp theo
   el('invoiceId').value = generateInvoiceId(invoiceDate);
   
@@ -688,6 +689,61 @@ function read3Digits(n, hasHigherGroup){
   }
   
   return result.trim();
+}
+/* ===== GỬI DỮ LIỆU ĐẾN GOOGLE SHEETS ===== */
+function sendToGoogleSheets(invoice) {
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz6-x1ldQKoqAJjhYSjipHI1unoyBr_tZnKg-Vq9T-MF54bm4bEmayMWczzPSwDN44A/exec';
+  
+  let totalAmount = 0;
+  let productsText = '';
+  let imeiText = '';
+  let quantityText = '';
+  let priceText = '';
+  let discountText = '';
+  let warrantyText = '';
+  
+  if(invoice.products && invoice.products.length > 0){
+    invoice.products.forEach((p, idx) => {
+      totalAmount += (p.price - p.discount) * p.qty;
+      productsText += (idx > 0 ? ', ' : '') + p.name;
+      imeiText += (idx > 0 ? ', ' : '') + (p.imei || '');
+      quantityText += (idx > 0 ? ', ' : '') + p.qty;
+      priceText += (idx > 0 ? ', ' : '') + formatMoney(p.price);
+      discountText += (idx > 0 ? ', ' : '') + formatMoney(p.discount);
+      warrantyText += (idx > 0 ? ', ' : '') + p.warranty + ' tháng';
+    });
+  }
+  
+  const data = {
+    datetime: new Date().toLocaleString('vi-VN'),
+    invoiceId: invoice.invoiceId,
+    customerName: invoice.tenkhach,
+    phone: invoice.sdt,
+    address: invoice.diachi,
+    products: productsText,
+    imei: imeiText,
+    quantity: quantityText,
+    price: priceText,
+    discount: discountText,
+    warranty: warrantyText,
+    total: totalAmount,
+    note: invoice.ghichu
+  };
+  
+  fetch(WEBAPP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  })
+  .then(() => {
+    console.log('✅ Đã ghi vào Google Sheets và gửi email đến nguyenvandienfb@gmail.com');
+  })
+  .catch(error => {
+    console.error('❌ Lỗi khi ghi Google Sheets:', error);
+  });
 }
 
 
