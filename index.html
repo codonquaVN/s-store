@@ -616,26 +616,74 @@ function resetForm(){
 }
 
 /* ====== Number to words (Vietnamese) ===== */
+/* ====== Number to words (Vietnamese) - ĐÃ SỬA ===== */
 function numberToWords(n){
-  if(n===0) return 'Không';
-  const dv=['','nghìn','triệu','tỷ','nghìn tỷ','triệu tỷ','tỷ tỷ'];
-  let str='', i=0;
-  while(n>0){
-    let part = n%1000; n=Math.floor(n/1000);
-    if(part>0){ str = read3Digits(part)+' '+dv[i]+' '+str; }
-    i++;
+  if(n === 0) return 'Không';
+  if(n < 0) return 'Âm ' + numberToWords(-n);
+  
+  const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ', 'triệu tỷ'];
+  let result = '';
+  let unitIndex = 0;
+  
+  while(n > 0){
+    let group = n % 1000;
+    if(group > 0){
+      let groupWords = read3Digits(group, unitIndex > 0 && n > 1000);
+      result = groupWords + (units[unitIndex] ? ' ' + units[unitIndex] : '') + (result ? ' ' + result : '');
+    }
+    n = Math.floor(n / 1000);
+    unitIndex++;
   }
-  return str.trim();
+  
+  // Viết hoa chữ cái đầu
+  return result.charAt(0).toUpperCase() + result.slice(1);
 }
-function read3Digits(n){
-  let c=Math.floor(n/100), t=Math.floor((n%100)/10), u=n%10, s='';
-  if(c>0) s+=c+' trăm ';
-  if(t>1) s+=t+' mươi '+(u>0?u:'');
-  else if(t==1) s+='mười '+(u>0?u:'');
-  else if(t==0 && u>0 && c>0) s+='lẻ '+u;
-  else if(t==0 && u>0) s+=u;
-  return s.trim();
+
+function read3Digits(n, hasHigherGroup){
+  if(n === 0) return '';
+  
+  const ones = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+  
+  let result = '';
+  let hundreds = Math.floor(n / 100);
+  let tens = Math.floor((n % 100) / 10);
+  let unit = n % 10;
+  
+  // Hàng trăm
+  if(hundreds > 0){
+    result += ones[hundreds] + ' trăm';
+  } else if(hasHigherGroup) {
+    result += 'không trăm';
+  }
+  
+  // Hàng chục
+  if(tens > 1){
+    result += (result ? ' ' : '') + ones[tens] + ' mươi';
+    if(unit === 1){
+      result += ' mốt';
+    } else if(unit === 5){
+      result += ' lăm';
+    } else if(unit > 0){
+      result += ' ' + ones[unit];
+    }
+  } else if(tens === 1){
+    result += (result ? ' ' : '') + 'mười';
+    if(unit > 0){
+      result += ' ' + ones[unit];
+    }
+  } else { // tens === 0
+    if(unit > 0){
+      if(hundreds > 0 || hasHigherGroup){
+        result += ' lẻ ' + ones[unit];
+      } else {
+        result += (result ? ' ' : '') + ones[unit];
+      }
+    }
+  }
+  
+  return result.trim();
 }
+
 
 /* ====== Login system ===== */
 const USERS = [ { username:'admin', password:'qwerty' } ];
