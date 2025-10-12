@@ -749,6 +749,93 @@ document.addEventListener('keydown', function(e) {
   }
 });
 </script>
+  </script>
+
+  <!-- ============= BẢO VỆ CODE ============= -->
+  <script>
+    // Chặn chuột phải (Right Click)
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      alert('⚠️ Chức năng này đã bị vô hiệu hóa!');
+      return false;
+    });
+
+    // Chặn các phím tắt mở DevTools
+    document.addEventListener('keydown', function(e) {
+      // F12
+      if (e.keyCode == 123) {
+        e.preventDefault();
+        alert('⚠️ Phím F12 đã bị vô hiệu hóa!');
+        return false;
+      }
+      // Ctrl+Shift+I (Inspect)
+      if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+        e.preventDefault();
+        alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
+        return false;
+      }
+      // Ctrl+Shift+J (Console)
+      if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
+        e.preventDefault();
+        alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
+        return false;
+      }
+      // Ctrl+U (View Source)
+      if (e.ctrlKey && e.keyCode == 85) {
+        e.preventDefault();
+        alert('⚠️ Không thể xem mã nguồn!');
+        return false;
+      }
+      // Ctrl+S (Save)
+      if (e.ctrlKey && e.keyCode == 83) {
+        e.preventDefault();
+        alert('⚠️ Không thể lưu trang!');
+        return false;
+      }
+      // Ctrl+Shift+C (Inspect Element)
+      if (e.ctrlKey && e.shiftKey && e.keyCode == 67) {
+        e.preventDefault();
+        alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
+        return false;
+      }
+    });
+
+    // Chặn kéo thả (Drag)
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    // Chặn chọn text
+    document.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    // Chặn copy
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+      alert('⚠️ Không thể sao chép nội dung!');
+      return false;
+    });
+
+    // Phát hiện DevTools đang mở (cách đơn giản)
+    const devToolsChecker = setInterval(function() {
+      const widthThreshold = window.outerWidth - window.innerWidth > 160;
+      const heightThreshold = window.outerHeight - window.innerHeight > 160;
+      
+      if (widthThreshold || heightThreshold) {
+        document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;color:red;">⚠️ VUI LÒNG ĐÓNG DEVELOPER TOOLS!</h1>';
+        clearInterval(devToolsChecker);
+      }
+    }, 1000);
+
+    // Chặn console.log
+    console.log = function() {};
+    console.clear = function() {};
+    console.dir = function() {};
+  </script>
+  <!-- ============= HẾT BẢO VỆ ============= -->
 
 </body>
 </html>
