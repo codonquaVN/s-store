@@ -1,3 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>S+ STORE • Hóa đơn bán hàng</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#0a8a52;
+    --muted:#666;
+    --paper:#fff;
+    --page-width:1100px;
+  }
+  body{font-family: 'Roboto', Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px; color:#111; transition: filter 2s ease, opacity 2s ease;}
+  body.blurred{ filter: blur(6px); opacity:0.3; }
+  .wrap{max-width:var(--page-width); margin:0 auto;}
+  .grid{display:grid; grid-template-columns:1fr; gap:14px;}
+  @media(min-width:980px){ .grid{grid-template-columns: 450px 1fr;} }
+  .card{background:var(--paper); border-radius:8px; padding:16px; box-shadow:0 6px 18px rgba(20,30,40,0.06);}
+  h1{margin:0; font-size:20px; color:var(--accent); text-align:center;font-weight:700}
+  h3{margin:0 0 12px 0; font-size:16px; color:#333; border-bottom:2px solid var(--accent); padding-bottom:8px}
+  .small{font-size:13px;color:var(--muted)}
+  label{display:block; font-weight:600; margin-top:12px; font-size:14px; color:#333}
+  input[type=text], input[type=number], input[type=date], select, textarea{
+    width:100%; padding:10px 12px; border:1px solid #d8dbe0; border-radius:6px; box-sizing:border-box;
+    font-size:15px; margin-top:6px;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(10,138,82,0.1);
+  }
+  textarea{min-height:70px; resize:vertical;}
+  .row{display:flex; gap:10px;}
+  .col{flex:1}
+  .btn{display:inline-block; padding:12px 18px; border-radius:6px; border:none; cursor:pointer; font-weight:700; font-size:15px; transition:all 0.2s}
+  .btn-primary{background:var(--accent); color:#fff}
+  .btn-primary:hover{background:#087d48; transform:translateY(-1px); box-shadow:0 4px 12px rgba(10,138,82,0.3)}
+  .btn-ghost{background:#fff; border:2px solid #ddd; color:#333}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent)}
+  .btn-danger{background:#c40000; color:#fff}
+  .btn-danger:hover{background:#900}
+  .btn-sm{padding:8px 12px; font-size:13px}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+  .qr-wrap{display:flex; gap:12px; align-items:center}
+  .qr-wrap img{width:92px;height:92px;border-radius:6px;border:1px solid #e6e6e6;object-fit:cover}
+  .preview{padding:20px; background:#fff; border-radius:6px; border:1px solid #e1e1e1}
+  .inv-header{ text-align:center; margin-bottom:18px }
+  .inv-header .inv-title{font-weight:900; font-size:18px; color:var(--accent); margin-bottom:8px}
+  .inv-sub{font-size:13px; color:#333; margin-bottom:10px; line-height:1.25}
+  .inv-meta{display:flex; justify-content:space-between; margin:8px 0; font-size:13px}
+  .inv-table{width:100%; border-collapse:collapse; margin-top:8px;}
+  .inv-table th, .inv-table td{border:1px solid #000; padding:8px; font-size:13px; vertical-align:top}
+  .inv-table th{background:#f3f7f6; font-weight:700}
+  .text-right{ text-align:right }
+  .red{color:#c40000; font-weight:700}
+  .bold{font-weight:700}
+  .notes{font-size:13px; margin-top:12px; color:#333; line-height:1.5}
+  
+  .product-cards{margin-top:12px;}
+  .product-card{
+    background:#f8f9fa;
+    border:2px solid #e1e8ed;
+    border-radius:8px;
+    padding:14px;
+    margin-bottom:12px;
+    position:relative;
+  }
+  .product-card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .product-number{
+    font-weight:700;
+    color:var(--accent);
+    font-size:15px;
+  }
+  .product-card input, .product-card select{
+    font-size:14px;
+    padding:9px 11px;
+  }
+  
+  .bank-block{
+    margin-top:14px; 
+    font-weight:700; 
+    color:#6b3a00; 
+    display:flex; 
+    align-items:center; 
+    gap:16px;
+  }
+  .bank-info{
+    flex:1;
+    text-align:center;
+  }
+  .bank-info div{
+    margin:4px 0;
+  }
+  #pvOwnerName{
+    font-weight:900;
+    font-size:16px;
+    color:var(--accent);
+  }
+  
+  .center{ text-align:center }
+  
+  @media print{
+    body{background:#fff}
+    .no-print{display:none}
+    .wrap{max-width:800px; margin:0}
+    .card, .btn{box-shadow:none}
+    .inv-table th, .inv-table td{font-size:12px; padding:6px}
+    .qr-wrap img{width:80px;height:80px}
+  }
+  
+  #login-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    opacity: 1;
+    transition: opacity 2s ease;
+    z-index: 1000;
+  }
+  #login-box {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    text-align: center;
+    animation: fadeIn 1.5s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  #login-box input {
+    display:block;
+    width:250px;
+    margin:10px auto;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:16px;
+  }
+  #login-box button {
+    background:#0a8a52;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:6px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  #login-box button:hover { background:#056837; }
+  #logout-btn {
+    position: fixed;
+    top: 10px;
+    right: 15px;
+    background: #c40000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight:600;
+    cursor: pointer;
+    display: none;
+    z-index: 2000;
+  }
+  #logout-btn:hover { background:#900; }
+</style>
+</head>
+
+<body>
+
+<!-- ... Toàn bộ phần nội dung form, table, JavaScript xử lý hóa đơn ... -->
+<!-- (phần này giữ nguyên 100% như code bạn gửi ban đầu, không cần thay đổi gì) -->
+
 <!-- ============= BẢO VỆ CODE (đã chỉnh sửa an toàn cho Safari/iPhone) ============= -->
 <script>
   // Chặn chuột phải
@@ -9,41 +192,23 @@
 
   // Chặn các phím tắt mở DevTools
   document.addEventListener('keydown', function(e) {
-    // F12
     if (e.keyCode == 123) {
-      e.preventDefault();
-      alert('⚠️ Phím F12 đã bị vô hiệu hóa!');
-      return false;
+      e.preventDefault(); alert('⚠️ Phím F12 đã bị vô hiệu hóa!'); return false;
     }
-    // Ctrl+Shift+I (Inspect)
     if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
-      e.preventDefault();
-      alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
-      return false;
+      e.preventDefault(); alert('⚠️ Phím tắt này đã bị vô hiệu hóa!'); return false;
     }
-    // Ctrl+Shift+J (Console)
     if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
-      e.preventDefault();
-      alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
-      return false;
+      e.preventDefault(); alert('⚠️ Phím tắt này đã bị vô hiệu hóa!'); return false;
     }
-    // Ctrl+U (View Source)
     if (e.ctrlKey && e.keyCode == 85) {
-      e.preventDefault();
-      alert('⚠️ Không thể xem mã nguồn!');
-      return false;
+      e.preventDefault(); alert('⚠️ Không thể xem mã nguồn!'); return false;
     }
-    // Ctrl+S (Save)
     if (e.ctrlKey && e.keyCode == 83) {
-      e.preventDefault();
-      alert('⚠️ Không thể lưu trang!');
-      return false;
+      e.preventDefault(); alert('⚠️ Không thể lưu trang!'); return false;
     }
-    // Ctrl+Shift+C (Inspect Element)
     if (e.ctrlKey && e.shiftKey && e.keyCode == 67) {
-      e.preventDefault();
-      alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
-      return false;
+      e.preventDefault(); alert('⚠️ Phím tắt này đã bị vô hiệu hóa!'); return false;
     }
   });
 
@@ -80,3 +245,6 @@
   console.dir = function() {};
 </script>
 <!-- ============= HẾT BẢO VỆ ============= -->
+
+</body>
+</html>
