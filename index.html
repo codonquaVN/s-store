@@ -619,12 +619,14 @@ function read3Digits(n, hasHigherGroup){
   return result.trim();
 }
 
+// =============== GỬI DỮ LIỆU LÊN GOOGLE SHEET ===============
 function sendToGoogleSheets(invoice) {
+  // 👉 Link Web App mới của bạn:
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwFpImQ0gEaAYhKXLHgkQWGPxzQPcQLXjTYa-dXSgT_zDHXdmOGk31UjF1U5GXrWfw_/exec';
 
-  
   console.log('🔵 Bắt đầu gửi dữ liệu...');
-  
+
+  // Tạo dữ liệu gửi đi
   let totalAmount = 0;
   let productsText = '';
   let imeiText = '';
@@ -632,8 +634,8 @@ function sendToGoogleSheets(invoice) {
   let priceText = '';
   let discountText = '';
   let warrantyText = '';
-  
-  if(invoice.products && invoice.products.length > 0){
+
+  if (invoice.products && invoice.products.length > 0) {
     invoice.products.forEach((p, idx) => {
       totalAmount += (p.price - p.discount) * p.qty;
       productsText += (idx > 0 ? ', ' : '') + p.name;
@@ -644,7 +646,7 @@ function sendToGoogleSheets(invoice) {
       warrantyText += (idx > 0 ? ', ' : '') + p.warranty + ' tháng';
     });
   }
-  
+
   const data = {
     datetime: new Date().toLocaleString('vi-VN'),
     invoiceId: invoice.invoiceId,
@@ -661,32 +663,40 @@ function sendToGoogleSheets(invoice) {
     note: invoice.ghichu,
     owner: invoice.owner || 'Không xác định'
   };
-  
-  console.log('📦 Dữ liệu:', data);
+
+  console.log('📦 Dữ liệu gửi đi:', data);
   console.log('👤 Chủ TK:', data.owner);
-  
-  // Dùng XMLHttpRequest (tương thích tốt với cả PC và Mobile)
+
+  // Gửi dữ liệu bằng XMLHttpRequest (tương thích tốt với cả Mobile và PC)
   const xhr = new XMLHttpRequest();
   xhr.open('POST', WEBAPP_URL, true);
   xhr.setRequestHeader('Content-Type', 'application/json');
-  
-  xhr.onload = function() {
-    console.log('✅ Đã gửi thành công!');
+
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      console.log('✅ Đã gửi thành công!');
+      alert('✅ Hóa đơn đã được lưu và gửi về Google Sheet thành công!');
+    } else {
+      console.error('❌ Lỗi phản hồi:', xhr.responseText);
+      alert('⚠️ Gửi thất bại, vui lòng thử lại!');
+    }
   };
-  
-  xhr.onerror = function() {
+
+  xhr.onerror = function () {
     console.error('❌ Lỗi kết nối!');
+    alert('⚠️ Không thể kết nối đến Google Sheet!');
   };
-  
-  xhr.ontimeout = function() {
-    console.error('⏱️ Timeout - mạng quá chậm!');
+
+  xhr.ontimeout = function () {
+    console.error('⏱️ Timeout - Mạng quá chậm!');
+    alert('⚠️ Hết thời gian kết nối, vui lòng thử lại!');
   };
-  
+
   xhr.timeout = 30000; // 30 giây
-  
+
   try {
     xhr.send(JSON.stringify(data));
-  } catch(e) {
+  } catch (e) {
     console.error('❌ Exception:', e);
   }
 }
