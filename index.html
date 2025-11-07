@@ -1,199 +1,845 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>S+ STORE • Hóa đơn bán hàng</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-  <style>
-    :root{--accent:#0a8a52;--muted:#666;--paper:#fff;--page-width:1100px;}
-    body{font-family:'Roboto',Arial,sans-serif;background:#f4f6f8;margin:0;padding:20px;color:#111;transition:filter 2s ease,opacity 2s ease;}
-    body.blurred{filter:blur(6px);opacity:0.3;}
-    .wrap{max-width:var(--page-width);margin:0 auto;}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px;}
-    @media(min-width:980px){.grid{grid-template-columns:450px 1fr;}}
-    .card{background:var(--paper);border-radius:8px;padding:16px;box-shadow:0 6px 18px rgba(20,30,40,0.06);}
-    h1{margin:0;font-size:20px;color:var(--accent);text-align:center;font-weight:700}
-    h3{margin:0 0 12px 0;font-size:16px;color:#333;border-bottom:2px solid var(--accent);padding-bottom:8px}
-    .small{font-size:13px;color:var(--muted)}
-    label{display:block;font-weight:600;margin-top:12px;font-size:14px;color:#333}
-    input,select,textarea{width:100%;padding:10px 12px;border:1px solid #d8dbe0;border-radius:6px;box-sizing:border-box;font-size:15px;margin-top:6px;}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(10,138,82,0.1);}
-    textarea{min-height:70px;resize:vertical;}
-    .row{display:flex;gap:10px;}
-    .col{flex:1}
-    .btn{display:inline-block;padding:12px 18px;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-size:15px;transition:all 0.2s}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-primary:hover{background:#087d48;transform:translateY(-1px);box-shadow:0 4px 12px rgba(10,138,82,0.3)}
-    .btn-ghost{background:#fff;border:2px solid #ddd;color:#333}
-    .btn-danger{background:#c40000;color:#fff}
-    .text-right{text-align:right}
-    .bold{font-weight:700}
-    .center{text-align:center}
-    #login-container{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);z-index:1000;}
-    #login-box{background:#fff;padding:30px 40px;border-radius:12px;box-shadow:0 0 20px rgba(0,0,0,0.1);text-align:center;}
-    #login-box input{display:block;width:250px;margin:10px auto;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;}
-    #logout-btn{position:fixed;top:10px;right:15px;background:#c40000;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:14px;display:none;z-index:2000;}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>S+ STORE • Hóa đơn bán hàng</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#0a8a52;
+    --muted:#666;
+    --paper:#fff;
+    --page-width:1100px;
+  }
+  body{font-family: 'Roboto', Arial, sans-serif; background:#f4f6f8; margin:0; padding:20px; color:#111; transition: filter 2s ease, opacity 2s ease;}
+  body.blurred{ filter: blur(6px); opacity:0.3; }
+  .wrap{max-width:var(--page-width); margin:0 auto;}
+  .grid{display:grid; grid-template-columns:1fr; gap:14px;}
+  @media(min-width:980px){ .grid{grid-template-columns: 450px 1fr;} }
+  .card{background:var(--paper); border-radius:8px; padding:16px; box-shadow:0 6px 18px rgba(20,30,40,0.06);}
+  h1{margin:0; font-size:20px; color:var(--accent); text-align:center;font-weight:700}
+  h3{margin:0 0 12px 0; font-size:16px; color:#333; border-bottom:2px solid var(--accent); padding-bottom:8px}
+  .small{font-size:13px;color:var(--muted)}
+  label{display:block; font-weight:600; margin-top:12px; font-size:14px; color:#333}
+  input[type=text], input[type=number], input[type=date], select, textarea{
+    width:100%; padding:10px 12px; border:1px solid #d8dbe0; border-radius:6px; box-sizing:border-box;
+    font-size:15px; margin-top:6px;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(10,138,82,0.1);
+  }
+  textarea{min-height:70px; resize:vertical;}
+  .row{display:flex; gap:10px;}
+  .col{flex:1}
+  .btn{display:inline-block; padding:12px 18px; border-radius:6px; border:none; cursor:pointer; font-weight:700; font-size:15px; transition:all 0.2s}
+  .btn-primary{background:var(--accent); color:#fff}
+  .btn-primary:hover{background:#087d48; transform:translateY(-1px); box-shadow:0 4px 12px rgba(10,138,82,0.3)}
+  .btn-ghost{background:#fff; border:2px solid #ddd; color:#333}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent)}
+  .btn-danger{background:#c40000; color:#fff}
+  .btn-danger:hover{background:#900}
+  .btn-sm{padding:8px 12px; font-size:13px}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+  .qr-wrap{display:flex; gap:12px; align-items:center}
+  .qr-wrap img{width:92px;height:92px;border-radius:6px;border:1px solid #e6e6e6;object-fit:cover}
+  .preview{padding:20px; background:#fff; border-radius:6px; border:1px solid #e1e1e1}
+  .inv-header{ text-align:center; margin-bottom:18px }
+  .inv-header .inv-title{font-weight:900; font-size:18px; color:var(--accent); margin-bottom:8px}
+  .inv-sub{font-size:13px; color:#333; margin-bottom:10px; line-height:1.25}
+  .inv-meta{display:flex; justify-content:space-between; margin:8px 0; font-size:13px}
+  .inv-table{width:100%; border-collapse:collapse; margin-top:8px;}
+  .inv-table th, .inv-table td{border:1px solid #000; padding:8px; font-size:13px; vertical-align:top}
+  .inv-table th{background:#f3f7f6; font-weight:700}
+  .text-right{ text-align:right }
+  .red{color:#c40000; font-weight:700}
+  .bold{font-weight:700}
+  .notes{font-size:13px; margin-top:12px; color:#333; line-height:1.5}
+  
+  .product-cards{margin-top:12px;}
+  .product-card{
+    background:#f8f9fa;
+    border:2px solid #e1e8ed;
+    border-radius:8px;
+    padding:14px;
+    margin-bottom:12px;
+    position:relative;
+  }
+  .product-card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+  .product-number{
+    font-weight:700;
+    color:var(--accent);
+    font-size:15px;
+  }
+  .product-card input, .product-card select{
+    font-size:14px;
+    padding:9px 11px;
+  }
+  
+  .bank-block{
+    margin-top:14px; 
+    font-weight:700; 
+    color:#6b3a00; 
+    display:flex; 
+    align-items:center; 
+    gap:16px;
+  }
+  .bank-info{
+    flex:1;
+    text-align:center;
+  }
+  .bank-info div{
+    margin:4px 0;
+  }
+  #pvOwnerName{
+    font-weight:900;
+    font-size:16px;
+    color:var(--accent);
+  }
+  
+  .center{ text-align:center }
+  
+  @media print{
+    body{background:#fff}
+    .no-print{display:none}
+    .wrap{max-width:800px; margin:0}
+    .card, .btn{box-shadow:none}
+    .inv-table th, .inv-table td{font-size:12px; padding:6px}
+    .qr-wrap img{width:80px;height:80px}
+  }
+  
+  #login-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    opacity: 1;
+    transition: opacity 2s ease;
+    z-index: 1000;
+  }
+  #login-box {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    text-align: center;
+    animation: fadeIn 1.5s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  #login-box input {
+    display:block;
+    width:250px;
+    margin:10px auto;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:16px;
+  }
+  #login-box button {
+    background:#0a8a52;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:6px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  #login-box button:hover { background:#056837; }
+  #logout-btn {
+    position: fixed;
+    top: 10px;
+    right: 15px;
+    background: #c40000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight:600;
+    cursor: pointer;
+    display: none;
+    z-index: 2000;
+  }
+  #logout-btn:hover { background:#900; }
+</style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-container">
   <div id="login-box">
     <h2>Đăng nhập S-STORE</h2>
     <input type="text" id="username" placeholder="Tên đăng nhập" autocomplete="off" />
     <input type="password" id="password" placeholder="Mật khẩu" />
     <button id="login-btn">Đăng nhập</button>
-    <p id="login-message" style="color:red;margin-top:10px;"></p>
+    <p id="login-message" style="color:red; margin-top:10px;"></p>
   </div>
 </div>
 <button id="logout-btn">Đăng xuất</button>
 
-<!-- APP CONTENT -->
 <div class="wrap">
-  <h1>S+ Store - HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h1>
-  <p class="small center">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</p>
-
-  <div class="grid">
-    <!-- FORM -->
-    <div class="card no-print">
-      <h3>📋 Thông tin hóa đơn</h3>
-
-      <label>Chọn chủ tài khoản</label>
-      <select id="ownerSelect"></select>
-      <div class="row">
-        <div class="col">
-          <label>Tên chủ TK</label><input id="ownerName" type="text" readonly>
-          <label>Ngân hàng & STK</label><input id="ownerBank" type="text" readonly>
-          <label>Liên hệ</label><input id="ownerContact" type="text" readonly>
-        </div>
-        <div style="width:110px;text-align:center;">
-          <label style="font-size:12px">QR chuyển khoản</label>
-          <img id="ownerQR" alt="QR" style="width:92px;height:92px;border:1px solid #ddd;border-radius:6px;">
-        </div>
+<h1>S+ Store - HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</h1>
+<p class="small center" style="margin-top:8px; margin-bottom:14px">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</p>
+<div class="grid">
+  <div class="card no-print">
+    <h3>📋 Thông tin hóa đơn</h3>
+    
+    <label>Chọn chủ tài khoản</label>
+    <select id="ownerSelect"></select>
+    
+    <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+      <div style="flex:1">
+        <label>Tên chủ TK</label><input id="ownerName" type="text" readonly>
+        <label style="margin-top:6px">Ngân hàng & STK</label><input id="ownerBank" type="text" readonly>
+        <label style="margin-top:6px">Liên hệ</label><input id="ownerContact" type="text" readonly>
       </div>
-
-      <label>Ngày hóa đơn</label>
-      <input id="invoiceDate" type="date">
-      <label>Tên khách hàng</label>
-      <input id="tenkhach" type="text">
-      <label>Số điện thoại</label>
-      <input id="sdt" type="text">
-      <label>Địa chỉ</label>
-      <input id="diachi" type="text">
-      <h3>🛒 Sản phẩm / Dịch vụ</h3>
-      <div id="productCards"></div>
-      <button class="btn btn-ghost" onclick="addProductCard()">+ Thêm sản phẩm</button>
-
-      <label>Ghi chú</label>
-      <textarea id="ghichu"></textarea>
-      <input id="invoiceId" type="hidden">
-      <div class="actions">
-        <button class="btn btn-primary" onclick="handleSave(false)">💾 Lưu & Xem</button>
-        <button class="btn btn-primary" onclick="handleSave(true)">🖨️ Lưu & In</button>
+      <div style="width:110px; text-align:center;">
+        <label style="font-size:12px">QR chuyển khoản</label>
+        <div class="qr-wrap"><img id="ownerQR" alt="QR"></div>
       </div>
     </div>
+    
+    <hr style="margin:16px 0; border:none; border-top:1px solid #e6e6e6">
+    
+    <label>Ngày hóa đơn</label>
+    <input id="invoiceDate" type="date">
+    
+    <label>Tên khách hàng</label>
+    <input id="tenkhach" type="text" placeholder="Ví dụ: Nguyễn Văn A">
+    
+    <div class="row">
+      <div class="col">
+        <label>Số điện thoại</label>
+        <input id="sdt" type="text" placeholder="0987654321">
+      </div>
+      <div class="col">
+        <label>Địa chỉ</label>
+        <input id="diachi" type="text" placeholder="Hà Nội">
+      </div>
+    </div>
+    
+    <hr style="margin:16px 0; border:none; border-top:1px solid #e6e6e6">
+    
+    <h3 style="margin-bottom:8px">🛒 Sản phẩm / Dịch vụ</h3>
+    
+    <div class="product-cards" id="productCards"></div>
+    
+    <button type="button" class="btn btn-ghost btn-sm" onclick="addProductCard()" style="width:100%">+ Thêm sản phẩm</button>
+    
+    <label>Ghi chú</label>
+    <textarea id="ghichu" placeholder="Ghi chú thêm về đơn hàng..."></textarea>
+    
+    <input id="invoiceId" type="hidden">
+    
+    <div class="actions">
+      <button class="btn btn-primary" onclick="handleSave(false)" style="flex:1">💾 Lưu & Xem</button>
+      <button class="btn btn-primary" onclick="handleSave(true)" style="flex:1">🖨️ Lưu & In</button>
+      <button class="btn btn-ghost" onclick="resetForm()" style="flex:1">🗑️ Xóa form</button>
+    </div>
+  </div>
 
-    <!-- PREVIEW -->
-    <div class="card preview">
+  <div class="card preview">
+    <div id="previewArea">
+      <div class="inv-header">
+        <div class="inv-title">S+ Store - ĐIỆN THOẠI ĐIỆN MÁY CHÍNH HÃNG</div>
+        <div class="inv-sub">SỐ 1 ngõ 50 LƯƠNG THẾ VINH - HÀ NỘI</div>
+        <div style="margin-top:6px; font-weight:700; font-size:18px;">HÓA ĐƠN BÁN HÀNG & DỊCH VỤ</div>
+      </div>
       <div id="invoicePreview" style="display:none">
-        <p><b>Khách hàng:</b> <span id="pvCustomer"></span></p>
-        <p><b>Địa chỉ:</b> <span id="pvAddress"></span></p>
-        <p><b>Ngày:</b> <span id="pvDate"></span></p>
-        <table class="inv-table" border="1" width="100%">
-          <thead><tr><th>Tên SP</th><th>SL</th><th>Giá</th><th>Giảm</th><th>Tổng</th></tr></thead>
+        <div class="inv-meta">
+          <div>
+            <div><b>Khách hàng:</b> <span id="pvCustomer"></span></div>
+            <div><b>Địa chỉ:</b> <span id="pvAddress"></span></div>
+            <div><b>Ghi chú:</b> <span id="pvNote"></span></div>
+          </div>
+          <div style="text-align:right">
+            <div><b>NGÀY</b></div>
+            <div id="pvDate"></div>
+            <div style="margin-top:8px"><b>Số hóa đơn:</b> <span id="pvInvoiceId"></span></div>
+          </div>
+        </div>
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th style="width:30%">MẶT HÀNG/DỊCH VỤ</th>
+              <th style="width:18%">NOTE/IMEI</th>
+              <th style="width:6%">SL</th>
+              <th style="width:14%">GIÁ</th>
+              <th style="width:12%">GIẢM</th>
+              <th style="width:14%">THANH TOÁN</th>
+            </tr>
+          </thead>
           <tbody id="pvItems"></tbody>
-          <tfoot><tr><td colspan="4">Tổng</td><td id="pvTotal"></td></tr></tfoot>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-right bold">TỔNG</td>
+              <td id="pvTotal" class="text-right bold"></td>
+            </tr>
+            <tr>
+              <td colspan="6" class="red bold">Bằng Chữ : <span id="pvInWords"></span></td>
+            </tr>
+          </tfoot>
         </table>
+        <div class="notes">
+          <b style="color:#b35d00">* Lưu Ý/Bảo Hành:</b>
+          <ul>
+            <li>Bao check đảm bảo đúng tình trạng khi xuất bán</li>
+            <li id="warrantyLine">Bảo hành theo thời gian ghi trên hóa đơn (Màn hình BH cảm ứng, không bảo hành hiển thị, ngoại quan: Vỡ - Sọc - Nháy - Mực - Chết Đen...)</li>
+            <li id="imeiLine">Thiết bị bảo hành đúng IMEI, còn tem BH, chưa can thiệp bên thứ ba</li>
+         
+          </ul>
+        </div>
+        
+        <div class="bank-block">
+          <div class="bank-info">
+            <div><b>Chủ TK:</b> <span id="pvOwnerName"></span></div>
+            <div id="pvOwnerBank"></div>
+            <div id="pvOwnerContact"></div>
+          </div>
+          <div style="text-align:center;">
+            <img id="pvQR" alt="QR" style="width:110px;height:110px;border:1px solid #eee;object-fit:cover">
+            <div style="color:#c40000; font-size:11px; margin-top:6px; line-height:1.4; font-weight:500; max-width:110px; margin-left:auto; margin-right:auto;">
+              Quý khách vui lòng chụp lại ảnh chuyển khoản để tiện đối chiếu
+            </div>
+          </div>
+        </div>
+        
+        <p class="center" style="margin-top:16px; font-weight:700;">TRÂN TRỌNG CẢM ƠN</p>
       </div>
     </div>
   </div>
 </div>
+</div>
 
 <script>
-const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwFpImQ0gEaAYhKXLHgkQWGPxzQPcQLXjTYa-dXSgT_zDHXdmOGk31UjF1U5GXrWfw_/exec';
+const OWNERS = [
+  { id: 'owner1', name: 'Ngô Minh Hoàng', bank: 'Techcombank : 9694999999', contact: '0977.818.000', qrLink: 'https://i.postimg.cc/4yhDx4cW/hoang.jpg' },
+  { id: 'owner2', name: 'Nguyễn Văn Diễn ', bank: 'Techcombank : 2255992888', contact: '0858.925.890', qrLink: 'https://i.postimg.cc/MT0R2VPR/dien.jpg' },
+  { id: 'owner3', name: 'Phạm Trung Thành', bank: 'Vietcombank : 0491000106412', contact: '098.6368.224', qrLink: 'https://i.postimg.cc/9F0416hy/thanh.png' },
+  { id: 'owner4', name: 'Đỗ Hồng Phương ', bank: 'MB Bank : 8922228688888', contact: '0982.421.468', qrLink: 'https://i.postimg.cc/Gmh1kRnH/a-ph-ng.jpg' },
+  { id: 'owner5', name: 'Quách Hoàng Chinh ', bank: 'Techcombank : 190333180198012', contact: '0979.144.688', qrLink: 'https://i.postimg.cc/pVFVTPRz/a-chinh.jpg' },
+  { id: 'owner6', name: 'Nguyễn Vân Cương ', bank: 'xxxx : 12345678', contact: 'xxxx', qrLink: 'https://i.postimg.cc/MT0R2VPR/dien.jpg' },
+];
 
-function el(id){return document.getElementById(id);}
-function addProductCard(){
-  const div=document.createElement('div');
-  div.className='product-card';
-  div.innerHTML=`<label>Tên SP</label><input class="product-name">
-                 <label>SL</label><input type="number" class="product-qty" value="1">
-                 <label>Giá</label><input type="number" class="product-price">
-                 <label>Giảm</label><input type="number" class="product-discount">`;
-  el('productCards').appendChild(div);
+function el(id){return document.getElementById(id)}
+const ownerSelect = el('ownerSelect');
+OWNERS.forEach(o => { const opt = document.createElement('option'); opt.value=o.id; opt.textContent=o.name; ownerSelect.appendChild(opt); });
+
+function setOwnerById(id){
+  const o = OWNERS.find(x=>x.id===id) || OWNERS[0];
+  el('ownerName').value = o.name;
+  el('ownerBank').value = o.bank;
+  el('ownerContact').value = o.contact;
+  el('pvOwnerName').textContent = o.name;
+  el('pvOwnerBank').textContent = o.bank;
+  el('pvOwnerContact').textContent = 'Liên hệ: ' + o.contact;
+  if(o.qrLink && o.qrLink.trim() !== ''){ el('ownerQR').src=o.qrLink; el('pvQR').src=o.qrLink; } else { el('ownerQR').src=''; el('pvQR').src=''; }
 }
-addProductCard();
+ownerSelect.addEventListener('change', e=> setOwnerById(e.target.value));
+setOwnerById(ownerSelect.value);
+
+let productCardCount = 0;
+
+function createProductCard(){
+  productCardCount++;
+  const cardId = `product-${productCardCount}`;
+  const card = document.createElement('div');
+  card.className = 'product-card';
+  card.id = cardId;
+  card.innerHTML = `
+    <div class="product-card-header">
+      <span class="product-number">Sản phẩm #${productCardCount}</span>
+      <button type="button" class="btn btn-danger btn-sm" onclick="removeProductCard('${cardId}')">× Xóa</button>
+    </div>
+    <label>Tên sản phẩm / Dịch vụ</label>
+    <input type="text" class="product-name" placeholder="Ví dụ: iPhone 17 Promax 2TB Cam">
+    <label>IMEI / Ghi chú</label>
+    <input type="text" class="product-imei" placeholder="Số IMEI hoặc ghi chú">
+    <div class="row">
+      <div class="col">
+        <label>Số lượng</label>
+        <input type="number" class="product-qty" value="1" min="1">
+      </div>
+      <div class="col">
+        <label>Giá (VNĐ)</label>
+        <input type="number" class="product-price" value="0" min="0">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Giảm giá (VNĐ)</label>
+        <input type="number" class="product-discount" value="0" min="0">
+      </div>
+      <div class="col">
+        <label>Bảo hành (tháng)</label>
+        <select class="product-warranty">
+          <option value="3">3 tháng</option>
+          <option value="6">6 tháng</option>
+          <option value="9">9 tháng</option>
+          <option value="12">12 tháng</option>
+        </select>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function addProductCard(){
+  const container = el('productCards');
+  const card = createProductCard();
+  container.appendChild(card);
+  updateRemoveButtons();
+}
+
+function removeProductCard(cardId){
+  const card = document.getElementById(cardId);
+  if(card){
+    card.remove();
+    updateRemoveButtons();
+  }
+}
+
+function updateRemoveButtons(){
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach((card, idx) => {
+    const btn = card.querySelector('.btn-danger');
+    if(btn){
+      btn.disabled = cards.length === 1;
+      btn.style.opacity = cards.length === 1 ? '0.5' : '1';
+      btn.style.cursor = cards.length === 1 ? 'not-allowed' : 'pointer';
+    }
+  });
+}
 
 function getProducts(){
-  const arr=[]; document.querySelectorAll('.product-card').forEach(c=>{
-    arr.push({
-      name:c.querySelector('.product-name').value,
-      qty:+c.querySelector('.product-qty').value||1,
-      price:+c.querySelector('.product-price').value||0,
-      discount:+c.querySelector('.product-discount').value||0
-    });
-  }); return arr;
+  const cards = document.querySelectorAll('.product-card');
+  const products = [];
+  cards.forEach(card => {
+    const name = card.querySelector('.product-name').value.trim();
+    const imei = card.querySelector('.product-imei').value.trim();
+    const qty = parseInt(card.querySelector('.product-qty').value) || 1;
+    const price = parseInt(card.querySelector('.product-price').value) || 0;
+    const discount = parseInt(card.querySelector('.product-discount').value) || 0;
+    const warranty = card.querySelector('.product-warranty').value;
+    if(name){
+      products.push({ name, imei, qty, price, discount, warranty });
+    }
+  });
+  return products;
 }
 
-function formatMoney(n){return new Intl.NumberFormat('vi-VN').format(n);}
-function numberToWords(n){return n.toString();} // đơn giản hóa
+window.addEventListener('DOMContentLoaded', function() {
+  addProductCard();
+  const today = new Date().toISOString().split('T')[0];
+  el('invoiceDate').value = today;
+  el('invoiceId').value = generateInvoiceId(today);
+});
+
+function generateInvoiceId(dateValue) {
+  const d = dateValue ? new Date(dateValue) : new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const dateStr = `${year}${month}${day}`;
+  const sameDate = savedInvoices.filter(inv => inv.invoiceId && inv.invoiceId.includes(dateStr));
+  const sequence = String(sameDate.length + 1).padStart(3, '0');
+  return `INV-${dateStr}-${sequence}`;
+}
+
+el('invoiceDate').addEventListener('change', function() {
+  el('invoiceId').value = generateInvoiceId(this.value);
+});
+
+let savedInvoices = JSON.parse(localStorage.getItem('invoices')||'[]');
+
+function handleSave(print=false){
+  const tenkhach = el('tenkhach').value.trim();
+  const diachi = el('diachi').value.trim();
+  const sdt = el('sdt').value.trim();
+  const ghichu = el('ghichu').value.trim();
+  const invoiceDate = el('invoiceDate').value;
+  const invoiceId = el('invoiceId').value.trim();
+  const products = getProducts();
+  
+  // LẤY TÊN CHỦ TÀI KHOẢN
+  const ownerName = el('ownerName').value.trim();
+  
+  const dateObj = new Date(invoiceDate);
+  const displayDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+  
+  const newInvoice = { 
+    invoiceId, 
+    tenkhach, 
+    diachi, 
+    sdt, 
+    ghichu, 
+    products,
+    date: displayDate,
+    dateRaw: invoiceDate,
+    owner: ownerName  // LƯU CHỦ TÀI KHOẢN
+  };
+  
+  savedInvoices.push(newInvoice); 
+  localStorage.setItem('invoices', JSON.stringify(savedInvoices)); 
+  renderPreview(newInvoice);
+  sendToGoogleSheets(newInvoice);
+  el('invoiceId').value = generateInvoiceId(invoiceDate);
+  
+  if(print){
+    setTimeout(() => window.print(), 500);
+  } else {
+    alert('✅ Đã lưu hóa đơn thành công!');
+  }
+}
+
+function formatMoney(n){
+  return new Intl.NumberFormat('vi-VN').format(n);
+}
 
 function renderPreview(inv){
-  el('pvCustomer').textContent=inv.tenkhach;
-  el('pvAddress').textContent=inv.diachi;
-  el('pvDate').textContent=inv.date;
-  const tbody=el('pvItems'); tbody.innerHTML='';
-  let total=0;
-  inv.products.forEach(p=>{
-    const t=(p.price-p.discount)*p.qty; total+=t;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${p.name}</td><td>${p.qty}</td><td>${formatMoney(p.price)}</td><td>${formatMoney(p.discount)}</td><td>${formatMoney(t)}</td>`;
-    tbody.appendChild(tr);
-  });
-  el('pvTotal').textContent=formatMoney(total);
+  el('pvInvoiceId').textContent = inv.invoiceId;
+  el('pvCustomer').textContent = inv.tenkhach + (inv.sdt ? ' | ' + inv.sdt : '');
+  el('pvAddress').textContent = inv.diachi || '';
+  el('pvNote').textContent = inv.ghichu || '';
+  el('pvDate').textContent = inv.date;
+  
+  const tbody = el('pvItems'); 
+  tbody.innerHTML='';
+  let totalAmount = 0;
+  
+  if(inv.products && inv.products.length > 0){
+    inv.products.forEach(product => {
+      const itemTotal = (product.price - product.discount) * product.qty;
+      totalAmount += itemTotal;
+      const tr = document.createElement('tr');
+      tr.innerHTML=`
+        <td>${product.name}</td>
+        <td>${product.imei || ''}</td>
+        <td class="text-right">${product.qty}</td>
+        <td class="text-right">${formatMoney(product.price)}</td>
+        <td class="text-right">${formatMoney(product.discount)}</td>
+        <td class="text-right">${formatMoney(itemTotal)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+  
+  el('pvTotal').textContent = formatMoney(totalAmount);
+  el('pvInWords').textContent = numberToWords(totalAmount) + ' đồng';
+  
+  const firstWarranty = inv.products ? inv.products[0].warranty : inv.baohanh;
+  if(firstWarranty){
+    el('warrantyLine').textContent = `Bảo hành ${firstWarranty} tháng (Màn hình BH cảm ứng, không bảo hành hiển thị, ngoại quan: Vỡ - Sọc - Nháy - Mực - Chết Đen...)`;
+  }
+  
   el('invoicePreview').style.display='block';
 }
 
-function handleSave(print=false){
-  const inv={
-    tenkhach:el('tenkhach').value, diachi:el('diachi').value,
-    date:new Date().toLocaleDateString('vi-VN'),
-    products:getProducts()
-  };
-  renderPreview(inv);
-  sendToGoogleSheets(inv);
-  if(print) setTimeout(()=>window.print(),500);
+function resetForm(){ 
+  if(!confirm('Bạn có chắc chắn muốn xóa toàn bộ form?')){
+    return;
+  }
+  el('tenkhach').value = '';
+  el('diachi').value = '';
+  el('sdt').value = '';
+  el('ghichu').value = '';
+  const container = el('productCards');
+  container.innerHTML = '';
+  productCardCount = 0;
+  addProductCard();
+  const today = new Date().toISOString().split('T')[0];
+  el('invoiceDate').value = today;
+  el('invoiceId').value = generateInvoiceId(today);
 }
 
-function sendToGoogleSheets(invoice){
-  let total=0, list='';
-  invoice.products.forEach((p,i)=>{
-    total+=(p.price-p.discount)*p.qty;
-    list+=(i?', ':'')+p.name;
-  });
-  const data={
-    datetime:new Date().toLocaleString('vi-VN'),
-    invoiceId:'INV-'+Date.now(),
-    customerName:invoice.tenkhach,
-    address:invoice.diachi,
-    products:list,
-    total:total
-  };
-  const xhr=new XMLHttpRequest();
-  xhr.open('POST',WEBAPP_URL,true);
-  xhr.setRequestHeader('Content-Type','application/json');
-  xhr.onload=function(){
-    console.log('Response:',xhr.responseText);
-    alert('Server trả về: '+xhr.responseText);
-  };
-  xhr.onerror=function(e){
-    alert('⚠️ Không thể gửi dữ liệu tới Google Sheet!\n'+e);
-  };
-  xhr.send(JSON.stringify(data));
+function numberToWords(n){
+  if(n === 0) return 'Không';
+  if(n < 0) return 'Âm ' + numberToWords(-n);
+  const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ', 'triệu tỷ'];
+  let result = '';
+  let unitIndex = 0;
+  while(n > 0){
+    let group = n % 1000;
+    if(group > 0){
+      let groupWords = read3Digits(group, unitIndex > 0 && n > 1000);
+      result = groupWords + (units[unitIndex] ? ' ' + units[unitIndex] : '') + (result ? ' ' + result : '');
+    }
+    n = Math.floor(n / 1000);
+    unitIndex++;
+  }
+  return result.charAt(0).toUpperCase() + result.slice(1);
 }
+
+function read3Digits(n, hasHigherGroup){
+  if(n === 0) return '';
+  const ones = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+  let result = '';
+  let hundreds = Math.floor(n / 100);
+  let tens = Math.floor((n % 100) / 10);
+  let unit = n % 10;
+  if(hundreds > 0){
+    result += ones[hundreds] + ' trăm';
+  } else if(hasHigherGroup) {
+    result += 'không trăm';
+  }
+  if(tens > 1){
+    result += (result ? ' ' : '') + ones[tens] + ' mươi';
+    if(unit === 1){
+      result += ' mốt';
+    } else if(unit === 5){
+      result += ' lăm';
+    } else if(unit > 0){
+      result += ' ' + ones[unit];
+    }
+  } else if(tens === 1){
+    result += (result ? ' ' : '') + 'mười';
+    if(unit > 0){
+      result += ' ' + ones[unit];
+    }
+  } else {
+    if(unit > 0){
+      if(hundreds > 0 || hasHigherGroup){
+        result += ' lẻ ' + ones[unit];
+      } else {
+        result += (result ? ' ' : '') + ones[unit];
+      }
+    }
+  }
+  return result.trim();
+}
+
+function sendToGoogleSheets(invoice) {
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz6-x1ldQKoqAJjhYSjipHI1unoyBr_tZnKg-Vq9T-MF54bm4bEmayMWczzPSwDN44A/exec';
+  
+  console.log('🔵 Bắt đầu gửi dữ liệu...');
+  
+  let totalAmount = 0;
+  let productsText = '';
+  let imeiText = '';
+  let quantityText = '';
+  let priceText = '';
+  let discountText = '';
+  let warrantyText = '';
+  
+  if(invoice.products && invoice.products.length > 0){
+    invoice.products.forEach((p, idx) => {
+      totalAmount += (p.price - p.discount) * p.qty;
+      productsText += (idx > 0 ? ', ' : '') + p.name;
+      imeiText += (idx > 0 ? ', ' : '') + (p.imei || '');
+      quantityText += (idx > 0 ? ', ' : '') + p.qty;
+      priceText += (idx > 0 ? ', ' : '') + formatMoney(p.price);
+      discountText += (idx > 0 ? ', ' : '') + formatMoney(p.discount);
+      warrantyText += (idx > 0 ? ', ' : '') + p.warranty + ' tháng';
+    });
+  }
+  
+  const data = {
+    datetime: new Date().toLocaleString('vi-VN'),
+    invoiceId: invoice.invoiceId,
+    customerName: invoice.tenkhach,
+    phone: invoice.sdt,
+    address: invoice.diachi,
+    products: productsText,
+    imei: imeiText,
+    quantity: quantityText,
+    price: priceText,
+    discount: discountText,
+    warranty: warrantyText,
+    total: totalAmount,
+    note: invoice.ghichu,
+    owner: invoice.owner || 'Không xác định'
+  };
+  
+  console.log('📦 Dữ liệu:', data);
+  console.log('👤 Chủ TK:', data.owner);
+  
+  // Dùng XMLHttpRequest (tương thích tốt với cả PC và Mobile)
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', WEBAPP_URL, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  
+  xhr.onload = function() {
+    console.log('✅ Đã gửi thành công!');
+  };
+  
+  xhr.onerror = function() {
+    console.error('❌ Lỗi kết nối!');
+  };
+  
+  xhr.ontimeout = function() {
+    console.error('⏱️ Timeout - mạng quá chậm!');
+  };
+  
+  xhr.timeout = 30000; // 30 giây
+  
+  try {
+    xhr.send(JSON.stringify(data));
+  } catch(e) {
+    console.error('❌ Exception:', e);
+  }
+}
+
+
+
+const USERS = [ { username:'admin', password:'qwerty' } ];
+const loginContainer = el('login-container');
+const logoutBtn = el('logout-btn');
+if(localStorage.getItem('loggedIn')==='true'){
+  loginContainer.style.display='none';
+  logoutBtn.style.display='block';
+  document.body.classList.remove('blurred');
+}else{
+  document.body.classList.add('blurred');
+}
+el('login-btn').addEventListener('click',()=>{
+  const username = el('username').value.trim();
+  const password = el('password').value.trim();
+  const message = el('login-message');
+  const found = USERS.find(u=>u.username===username && u.password===password);
+  if(found){
+    message.textContent='';
+    document.body.classList.remove('blurred');
+    loginContainer.style.opacity='0';
+    setTimeout(()=>{
+      loginContainer.style.display='none';
+      logoutBtn.style.display='block';
+      localStorage.setItem('loggedIn','true');
+    },2000);
+  }else{ message.textContent='Sai tên đăng nhập hoặc mật khẩu!'; }
+});
+logoutBtn.addEventListener('click',()=>{
+  if(confirm('Bạn có chắc chắn muốn đăng xuất?')){
+    localStorage.removeItem('loggedIn');
+    logoutBtn.style.display='none';
+    loginContainer.style.display='flex';
+    setTimeout(()=>{ loginContainer.style.opacity='1'; document.body.classList.add('blurred'); },200);
+  }
+});
 </script>
+
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', function(e) {
+  if(e.keyCode == 123) {
+    e.preventDefault();
+    return false;
+  }
+  if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) {
+    e.preventDefault();
+    return false;
+  }
+  if(e.ctrlKey && e.keyCode == 85) {
+    e.preventDefault();
+    return false;
+  }
+  if(e.ctrlKey && e.keyCode == 83) {
+    e.preventDefault();
+    return false;
+  }
+});
+</script>
+  </script>
+
+<!-- ============= BẢO VỆ CODE (phiên bản an toàn cho Safari/iPhone) ============= -->
+<script>
+// 🔒 Chặn chuột phải (Right Click)
+document.addEventListener('contextmenu', function (e) {
+  e.preventDefault();
+  alert('⚠️ Chức năng này đã bị vô hiệu hóa!');
+  return false;
+});
+
+// 🔒 Chặn các phím tắt mở DevTools và xem mã nguồn
+document.addEventListener('keydown', function (e) {
+  // F12
+  if (e.keyCode === 123) {
+    e.preventDefault();
+    alert('⚠️ Phím F12 đã bị vô hiệu hóa!');
+    return false;
+  }
+
+  // Ctrl+Shift+I (Inspect)
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+    e.preventDefault();
+    alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
+    return false;
+  }
+
+  // Ctrl+Shift+J (Console)
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+    e.preventDefault();
+    alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
+    return false;
+  }
+
+  // Ctrl+Shift+C (Inspect Element)
+  if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+    e.preventDefault();
+    alert('⚠️ Phím tắt này đã bị vô hiệu hóa!');
+    return false;
+  }
+
+  // Ctrl+U (View Source)
+  if (e.ctrlKey && e.keyCode === 85) {
+    e.preventDefault();
+    alert('⚠️ Không thể xem mã nguồn!');
+    return false;
+  }
+
+  // Ctrl+S (Save)
+  if (e.ctrlKey && e.keyCode === 83) {
+    e.preventDefault();
+    alert('⚠️ Không thể lưu trang!');
+    return false;
+  }
+});
+
+// 🔒 Chặn kéo, chọn và copy
+document.addEventListener('dragstart', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+document.addEventListener('copy', e => {
+  e.preventDefault();
+  alert('⚠️ Không thể sao chép nội dung!');
+  return false;
+});
+
+// ✅ Kiểm tra loại trình duyệt – BỎ QUA với Safari / Facebook / Messenger / Instagram
+const isSafeBrowser = /FBAN|FBAV|Instagram|Line|Messenger|Safari/i.test(navigator.userAgent);
+
+if (!isSafeBrowser) {
+  // 🔍 Kiểm tra DevTools theo kích thước cửa sổ (chỉ áp dụng trên desktop)
+  const devToolsChecker = setInterval(function () {
+    const widthThreshold = window.outerWidth - window.innerWidth > 160;
+    const heightThreshold = window.outerHeight - window.innerHeight > 160;
+
+    if (widthThreshold || heightThreshold) {
+      document.body.innerHTML =
+        '<h1 style="text-align:center;margin-top:50px;color:red;">⚠️ VUI LÒNG ĐÓNG DEVELOPER TOOLS!</h1>';
+      clearInterval(devToolsChecker);
+    }
+  }, 1000);
+} else {
+  console.log('🟢 Safari hoặc WebView (Facebook/Messenger) – bỏ qua kiểm tra DevTools.');
+}
+
+// 🔒 Chặn các log ra console
+console.log = function () {};
+console.clear = function () {};
+console.dir = function () {};
+</script>
+<!-- ============= HẾT BẢO VỆ ============= -->
+
+
 </body>
 </html>
