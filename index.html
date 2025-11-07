@@ -683,10 +683,9 @@ function sendToGoogleSheets(invoice) {
     }
   };
 
-  xhr.onerror = function () {
-    console.error('❌ Lỗi kết nối!');
-    alert('⚠️ Không thể kết nối đến Google Sheet!');
-  };
+  xhr.onerror = function(e) { console.error('❌ Lỗi kết nối: ', e); alert('❌ ' + e); };
+xhr.onload = function() { console.log('Phản hồi:', xhr.responseText); alert(xhr.responseText); };
+
 
   xhr.ontimeout = function () {
     console.error('⏱️ Timeout - Mạng quá chậm!');
