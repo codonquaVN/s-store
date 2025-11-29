@@ -620,56 +620,46 @@ function read3Digits(n, hasHigherGroup){
 }
 
 function sendToGoogleSheets(invoice) {
-  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwo9r5QxnHlbvPp0NMoCBInkRkhv7bwCq4eV0s0BuDFxsN0z1ghCPYo9hNfcErsGE7qVw/exec'; // Thay URL webapp của bạn
-
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz6-x1ldQKoqAJjhYSjipHI1unoyBr_tZnKg-Vq9T-MF54bm4bEmayMWczzPSwDN44A/exec';
+  
   console.log('🔵 Bắt đầu gửi dữ liệu...');
-
-  // Chuẩn bị dữ liệu gửi lên Sheet
-  const now = new Date();
-  const datetime = now.toLocaleString('vi-VN');
-
+  
+  let totalAmount = 0;
+  let productsText = '';
+  let imeiText = '';
+  let quantityText = '';
+  let priceText = '';
+  let discountText = '';
+  let warrantyText = '';
+  
+  if(invoice.products && invoice.products.length > 0){
+    invoice.products.forEach((p, idx) => {
+      totalAmount += (p.price - p.discount) * p.qty;
+      productsText += (idx > 0 ? ', ' : '') + p.name;
+      imeiText += (idx > 0 ? ', ' : '') + (p.imei || '');
+      quantityText += (idx > 0 ? ', ' : '') + p.qty;
+      priceText += (idx > 0 ? ', ' : '') + formatMoney(p.price);
+      discountText += (idx > 0 ? ', ' : '') + formatMoney(p.discount);
+      warrantyText += (idx > 0 ? ', ' : '') + p.warranty + ' tháng';
+    });
+  }
+  
   const data = {
-    datetime,
+    datetime: new Date().toLocaleString('vi-VN'),
     invoiceId: invoice.invoiceId,
     customerName: invoice.tenkhach,
     phone: invoice.sdt,
     address: invoice.diachi,
+    products: productsText,
+    imei: imeiText,
+    quantity: quantityText,
+    price: priceText,
+    discount: discountText,
+    warranty: warrantyText,
+    total: totalAmount,
     note: invoice.ghichu,
-    owner: invoice.owner || 'Không xác định',
-    products: []
+    owner: invoice.owner || 'Không xác định'
   };
-
-  if(invoice.products && invoice.products.length > 0){
-    invoice.products.forEach(p=>{
-      data.products.push({
-        name: p.name,
-        imei: p.imei || '',
-        quantity: p.qty,
-        price: p.price,
-        discount: p.discount,
-        warranty: p.warranty
-      });
-    });
-  }
-
-  console.log('📦 Dữ liệu gửi:', data);
-
-  // Gửi bằng fetch API, tương thích PC/Mobile
-  fetch(WEBAPP_URL, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {'Content-Type':'application/json'}
-  })
-  .then(res => res.json())
-  .then(res => {
-    console.log('✅ Gửi thành công!', res);
-  })
-  .catch(err => {
-    console.error('❌ Lỗi gửi dữ liệu lên Google Sheets:', err);
-    alert('❌ Lỗi gửi dữ liệu! Kiểm tra console để biết chi tiết.');
-  });
-}
-
   
   console.log('📦 Dữ liệu:', data);
   console.log('👤 Chủ TK:', data.owner);
